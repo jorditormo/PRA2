@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(knitr)
 ```
 
-# 1. **Descripció del dataset**. 
+# 1. Descripció del dataset. 
 
 Perquè és important i quina pregunta/problema pretén respondre?
 
@@ -59,6 +59,11 @@ El conjunt de dades “Heart Attack Analysis & Prediction dataset” s'ha obting
   * `0`: Estrenyiment < 50% del diàmetre. Menys possibilitats de patir malalties del cor.
   * `1`: Estrenyiment > 50% del diàmetre. Més possibilitats de patir malalties del cor.
 
+# 2. Integració i selecció.
+
+Integració i selecció de les dades d’interès a analitzar. Pot ser el resultat
+d’addicionar diferents datasets o una subselecció útil de les dades originals, en
+base a l’objectiu que es vulgui aconseguir.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 # Es carrega el fitxer de dades en un objecte amb identificador denominat heart
@@ -70,7 +75,36 @@ dim(data)
 summary(data)
 ```
 
-```{r echo=TRUE, message=FALSE, warning=FALSE}
-getwd()
-```
-asdfasdfsd
+# 3. Neteja de les dades.
+
+* **3.1. Les dades contenen zeros o elements buits? Gestiona cadascun d’aquests casos.**
+
+* **3.2. Identifica i gestiona els valors extrems.**
+
+# 4. Anàlisi de les dades.
+
+* **4.1. Selecció dels grups de dades que es volen analitzar/comparar (p. e., si es volen comparar grups de dades, quins són aquests grups i quins tipus d’anàlisi s’aplicaran?).**
+
+* **4.2. Comprovació de la normalitat i homogeneïtat de la variància.**
+
+* **4.3. Aplicació de proves estadístiques per comparar els grups de dades. En funció de les dades i de l’objectiu de l’estudi, aplicar proves de contrast d’hipòtesis, correlacions, regressions, etc. Aplicar almenys tres mètodes d’anàlisi diferents.**
+
+# 5. Representació dels resultats a partir de taules i gràfiques. 
+
+Aquest apartat es pot respondre al llarg de la pràctica, sense la necessitat de concentrar totes les representacions en aquest punt de la pràctica. 
+
+# 6. Resolució del problema. 
+
+A partir dels resultats obtinguts, quines són les conclusions? Els resultats permeten respondre al problema?
+
+# 7. Codi. 
+
+Cal adjuntar el codi, preferiblement en R, amb el que s’ha realitzat la neteja, anàlisi i representació de les dades. Si ho preferiu, també podeu treballar en Python.
+
+# 8. Vídeo. 
+
+Realitzar un breu vídeo explicatiu de la pràctica (màxim 10 minuts) on tots els integrants de l'equip expliquin amb les seves pròpies paraules el desenvolupament de la pràctica, basant-se en les preguntes de l'enunciat per a justificar i explicar el codi desenvolupat. Aquest vídeo s'haurà de lliurar a través d'un enllaç al Google Drive de la UOC (https://drive.google.com/…), juntament
+amb l’enllaç al repositori Git lliurat.
+
+
+
