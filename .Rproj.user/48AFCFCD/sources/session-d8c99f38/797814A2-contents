@@ -1,0 +1,71 @@
+---
+title: "PRA 2 - Com realitzar la neteja i l'anàlisi de dades?"
+author: "Judith Cid, Jordi Tormo"
+date: "2023-12-27"
+output:
+  html_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load_libraries, include=FALSE}
+library(knitr)
+```
+
+# 1. **Descripció del dataset**. 
+
+Perquè és important i quina pregunta/problema pretén respondre?
+
+
+* `age`: Edat del pacient
+* `sex`: Sexe del pacient
+* `cp` : Tipus de dolor toràcic.
+  * `1`: Angina de pit típica
+  * `2`: Angina de pit atípica
+  * `3`: Dolor no anginal
+  * `4`: Asimptomàtic
+* `trtbps`: Pressió arterial en repòs (in mm Hg)
+* `chol`: Colesterol en mg/dl obtingut mitjançant sensor d'IMC (índex de massa corporal)
+* `fbs`: Sucre en sang en dejú > 120 mg/dl
+  * `1`: Vertader
+  * `0`: Fals
+* `restecg`: Resultats electrocardiogràfics en repòs
+  * `0`: Normal
+  * `1`: Té anomalia de l'ona ST-T (inversions d'ona T i/o elevació o depressió ST de > 0,05 mV)
+  * `2`: Mostra una hipertròfia ventricular esquerra probable o definitiva segons el criteri d'Estes
+* `thalachh`: Freqüència cardíaca màxima aconseguida
+* `exng`: Exercici angina de pit induïda
+  * `1`: Sí
+  * `0`: No
+* `oldpeak`:  Depressió de ST induïda per l'exercici en relació amb el descans
+* `slp`: El pendent del segment ST d'exercici màxim
+  * `0`: Sense inclinar
+  * `1`: Pla
+  * `2`: Baixada
+
+
+* `target`: 0= menys possibilitats d'atac cardíac 1= més possibilitats d'atac cardíac
+
+* `ca`: number of major vessels (0-3)
+
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Es carrega el fitxer de dades en un objecte amb identificador denominat heart
+data <- read.csv('../Dataset/heart.csv',header=T,sep=",")
+
+# s'examinen els valors resum de cada tipus de variable
+str(data)
+dim(data)
+summary(data)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+getwd()
+```
