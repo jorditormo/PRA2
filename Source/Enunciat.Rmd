@@ -215,9 +215,9 @@ cat("\t ·A part dels valors possibles (0,1), hi ha", sum(data$output %in% c(0,1
 
 ```
 
+Segons la descripció dels valors interessa factorizar-ne alguns ja que són variables categòriques amb un número finit de valors.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-
 data$sex <- as.factor(data$sex)
 data$cp <- as.factor(data$cp)
 data$fbs <- as.factor(data$fbs)
@@ -228,15 +228,27 @@ data$caa <- as.factor(data$caa)
 data$thall <- as.factor(data$thall)
 data$output <- as.factor(data$output)
 
-
 # valors numèrics i categòrics separats
 data_num <- data[,c('age', 'trtbps', 'chol', 'thalachh', 'oldpeak')]
 data_cat <- data[,c('sex','cp', 'fbs', 'restecg', 'exng', 'slp', 'caa', 'thall', 'output')]
 str(data)
 ```
 
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+summary(data)
+```
 
 * **3.2. Identifica i gestiona els valors extrems.**
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+for (i in colnames(data)) boxplot(data[i], main = i)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+for (i in colnames(data)) cat (i)
+```
+
 
 # 4. Anàlisi de les dades.
 
