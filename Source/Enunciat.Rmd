@@ -49,7 +49,7 @@ El conjunt de dades “Heart Attack Analysis & Prediction dataset” s'ha obting
   * `0`: Sense inclinar
   * `1`: Pla
   * `2`: Baixada
-* `caa`: Nombre de vasos principals del cor (0-3)
+* `caa`: Nombre de vasos principals del cor (0-4)
 * `thall`: Talassèmia
   * `0`: Nul
   * `1`: Defecte solucionat 
@@ -82,28 +82,32 @@ plot(data$segment_age)
 # 3. Neteja de les dades.
 
 * **3.1. Les dades contenen zeros o elements buits? Gestiona cadascun d’aquests casos.**
+
+En primer lloc, es comprova que tots els atributs ténen sentit segons la seva descripció i valors possibles.
+
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
-
-
+# --------------------
+# cp
+# --------------------
 cat("\"Tipus de dolor toràcic\" (cp): \n")
 cat("\t ·El número de zeros a l'atribut cp és:", nrow(data[data$cp == 0, ]) ,".\n")
 cat("\t ·A part dels valors possibles (1,2,3 i 4) i elemens buits, hi ha", sum(data$cp %in% c(0,1,2,3,4)) - nrow(data) ,"resistres amb altres valors.\n")
-data[data$cp == 0,]$cp <- NA
-cat("\t ·Els zeros s'han sobreescrit com valors na.\n")
 
+# --------------------
+# trtbps
+# --------------------
 cat("\"Pressió arterial en repòs (in mm Hg)\" (trtbps): \n")
 if(nrow(data[data$trtbps == 0, ]) == 0){
   cat("\t ·No hi ha zeros a l'atribut trtbps.\n")
 } else {
-  data[data$trtbps == 0,]$trtbps <- NA
-  cat("\t · S'han trobat", sum(is.na(data$trtbps)) , "zeros i s'han sobreescrit com valors na.\n")
+  cat("\t · S'han trobat", nrow(data[data$trtbps == 0, ]) , "zeros.\n")
 }
 if(nrow(data[data$trtbps < 0, ]) == 0) {
   cat("\t ·No hi ha valors negatius a l'atribut trtbps.\n")
 } else {
-  data[data$trtbps < 0,]$trtbps <- NA
-  cat("\t ·Els valors negatius no són vàlids i s'han sobreescrit com a valros na.\n")
+  data[data$trtbps < 0,]$trtbps <- 0
+  cat("\t ·Els valors negatius no són vàlids i s'han sobreescrit com a 0.\n")
 }
 if (all.equal(data$trtbps, as.integer(data$trtbps)) ){
   cat("\t ·Tots els valors són enters.\n")
@@ -112,14 +116,119 @@ if (all.equal(data$trtbps, as.integer(data$trtbps)) ){
   cat("\t ·S'han trobat valors positius no enters i s'han sobreescrit per valors enters.\n")
 }
 
+# --------------------
+# chol
+# --------------------
+cat("\"Colesterol en mg/dl\" (chol): \n")
+if(nrow(data[data$chol == 0, ]) == 0){
+  cat("\t ·No hi ha zeros a l'atribut chol\n")
+} else {
+  cat("\t · S'han trobat", nrow(data[data$chol == 0, ]) , "zeros.\n")
+}
+if(nrow(data[data$chol < 0, ]) == 0) {
+  cat("\t ·No hi ha valors negatius a l'atribut chol\n")
+} else {
+  data[data$chol < 0,]$chol <- 0
+  cat("\t ·Els valors negatius no són vàlids i s'han sobreescrit com a 0.\n")
+}
+if (all.equal(data$chol, as.integer(data$chol)) ){
+  cat("\t ·Tots els valors són enters.\n")
+} else {
+  data[data$trtbps,]$chol = as.integer(data[data$chol,])
+  cat("\t ·S'han trobat valors positius no enters i s'han sobreescrit per valors enters.\n")
+}
+
+# --------------------
+# fbs
+# --------------------
+cat("\"Sucre en sang en dejú\" (fbs): \n")
+cat("\t ·A part dels valors possibles (0,1), hi ha", sum(data$fbs %in% c(0,1)) - nrow(data) ,"resistres amb altres valors.\n")
+
+# --------------------
+# restecg
+# --------------------
+cat("\"Resultats electrocardiogràfics en repòs\" (restecg): \n")
+cat("\t ·A part dels valors possibles (0,1,2), hi ha", sum(data$restecg %in% c(0,1,2)) - nrow(data) ,"resistres amb altres valors.\n")
+
+# --------------------
+# thalachh
+# --------------------
+cat("\"Freqüència cardíaca màxima aconseguida\" (thalachh): \n")
+if(nrow(data[data$thalachh == 0, ]) == 0){
+  cat("\t ·No hi ha zeros a l'atribut thalachh\n")
+} else {
+  cat("\t · S'han trobat", nrow(data[data$thalachh == 0, ]), "zeros.\n")
+}
+if(nrow(data[data$thalachh < 0, ]) == 0) {
+  cat("\t ·No hi ha valors negatius a l'atribut thalachh\n")
+} else {
+  data[data$thalachh < 0,]$thalachh <- 0
+  cat("\t ·Els valors negatius no són vàlids i s'han sobreescrit com 0.\n")
+}
+if (all.equal(data$thalachh, as.integer(data$thalachh)) ){
+  cat("\t ·Tots els valors són enters.\n")
+} else {
+  data[data$trtbps,]$thalachh = as.integer(data[data$thalachh,])
+  cat("\t ·S'han trobat valors positius no enters i s'han sobreescrit per valors enters.\n")
+}
+
+# --------------------
+# exng
+# --------------------
+cat("\"Exercici angina de pit induïda\" (exng): \n")
+cat("\t ·A part dels valors possibles (0,1), hi ha", sum(data$exng %in% c(0,1)) - nrow(data) ,"resistres amb altres valors.\n")
+
+# --------------------
+# oldpeak
+# --------------------
+cat("\"Depressió de ST induïda per l’exercici en relació amb el descans\" (oldpeak): \n")
+if(nrow(data[data$oldpeak == 0, ]) == 0){
+  cat("\t ·No hi ha zeros a l'atribut oldpeak\n")
+} else {
+  cat("\t · S'han trobat", nrow(data[data$oldpeak == 0, ]) , "zeros.\n")
+}
+if(nrow(data[data$oldpeak < 0, ]) == 0) {
+  cat("\t · No hi ha valors negatius a l'atribut oldpeak\n")
+} else {
+  data[data$oldpeak < 0,]$oldpeak <- 0
+  cat("\t · Els valors negatius no són vàlids i s'han sobreescrit com a 0.\n")
+}
+data$oldpeak <- as.numeric(data$oldpeak)
+
+# --------------------
+# slp
+# --------------------
+cat("\"El pendent del segment ST d’exercici màxim\" (slp): \n")
+cat("\t ·A part dels valors possibles (0,1,2), hi ha", sum(data$slp %in% c(0,1,2)) - nrow(data) ,"resistres amb altres valors.\n")
+
+# --------------------
+# caa
+# --------------------
+cat("\"Nombre de vasos principals del cor\" (caa): \n")
+cat("\t ·A part dels valors possibles (0,1,2,3,4), hi ha", sum(data$caa %in% c(0,1,2,3,4)) - nrow(data) ,"resistres amb altres valors.\n")
+
+# --------------------
+# thall
+# --------------------
+cat("\" Talassèmia\" (thall): \n")
+cat("\t ·A part dels valors possibles (0,1,2,3,4), hi ha", sum(data$thall %in% c(0,1,2,3,4)) - nrow(data) ,"resistres amb altres valors.\n")
+
+# --------------------
+# output
+# --------------------
+cat("\"Diagnòstic de malalties cardíaques\" (output): \n")
+cat("\t ·A part dels valors possibles (0,1), hi ha", sum(data$output %in% c(0,1,2,3)) - nrow(data) ,"resistres amb altres valors.\n")
 
 ```
+
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-sum(data$cp %in% c(0,1,2,3,4))
-check_data
-data$cp
+# valors numèrics i categòrics separats
+data_num <- data[,c('age','trtbps','chol','thalachh','oldpeak')]
+data_cat <- data[,c('sex','cp','fbs','restecg','exng')]
+
 ```
+
 
 * **3.2. Identifica i gestiona els valors extrems.**
 
@@ -130,6 +239,11 @@ data$cp
 * **4.2. Comprovació de la normalitat i homogeneïtat de la variància.**
 
 * **4.3. Aplicació de proves estadístiques per comparar els grups de dades. En funció de les dades i de l’objectiu de l’estudi, aplicar proves de contrast d’hipòtesis, correlacions, regressions, etc. Aplicar almenys tres mètodes d’anàlisi diferents.**
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(corrplot)
+corrplot(data, method="square", type="upper",)
+```
 
 # 5. Representació dels resultats a partir de taules i gràfiques. 
 
