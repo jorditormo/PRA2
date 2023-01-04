@@ -61,23 +61,65 @@ El conjunt de dades “Heart Attack Analysis & Prediction dataset” s'ha obting
 
 # 2. Integració i selecció.
 
-Integració i selecció de les dades d’interès a analitzar. Pot ser el resultat
-d’addicionar diferents datasets o una subselecció útil de les dades originals, en
-base a l’objectiu que es vulgui aconseguir.
+Integració i selecció de les dades d’interès a analitzar. Pot ser el resultat d’addicionar diferents datasets o una subselecció útil de les dades originals, en base a l’objectiu que es vulgui aconseguir.
+
+S'utilitza el document `heart.csv` que consta de 303 registres i 14 atributs
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-# Es carrega el fitxer de dades en un objecte amb identificador denominat heart
+# Es carrega el fitxer de dades en un objecte amb identificador denominat data
 data <- read.csv('../Dataset/heart.csv',header=T,sep=",")
 
 # s'examinen els valors resum de cada tipus de variable
 str(data)
-dim(data)
-summary(data)
 ```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Pot ser interessant discretitzar les variables age
+data["segment_age"] <- cut(data$age, breaks = c(0,25,35,45,55,65,100), labels = c("<25", "25-34", "35-44", "45-54","55-64",">65"))
+plot(data$segment_age)
+```
+
 
 # 3. Neteja de les dades.
 
 * **3.1. Les dades contenen zeros o elements buits? Gestiona cadascun d’aquests casos.**
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+
+
+cat("\"Tipus de dolor toràcic\" (cp): \n")
+cat("\t ·El número de zeros a l'atribut cp és:", nrow(data[data$cp == 0, ]) ,".\n")
+cat("\t ·A part dels valors possibles (1,2,3 i 4) i elemens buits, hi ha", sum(data$cp %in% c(0,1,2,3,4)) - nrow(data) ,"resistres amb altres valors.\n")
+data[data$cp == 0,]$cp <- NA
+cat("\t ·Els zeros s'han sobreescrit com valors na.\n")
+
+cat("\"Pressió arterial en repòs (in mm Hg)\" (trtbps): \n")
+if(nrow(data[data$trtbps == 0, ]) == 0){
+  cat("\t ·No hi ha zeros a l'atribut trtbps.\n")
+} else {
+  data[data$trtbps == 0,]$trtbps <- NA
+  cat("\t · S'han trobat", sum(is.na(data$trtbps)) , "zeros i s'han sobreescrit com valors na.\n")
+}
+if(nrow(data[data$trtbps < 0, ]) == 0) {
+  cat("\t ·No hi ha valors negatius a l'atribut trtbps.\n")
+} else {
+  data[data$trtbps < 0,]$trtbps <- NA
+  cat("\t ·Els valors negatius no són vàlids i s'han sobreescrit com a valros na.\n")
+}
+if (all.equal(data$trtbps, as.integer(data$trtbps)) ){
+  cat("\t ·Tots els valors són enters.\n")
+} else {
+  data[data$trtbps,]$trtbps = as.integer(data[data$trtbps,])
+  cat("\t ·S'han trobat valors positius no enters i s'han sobreescrit per valors enters.\n")
+}
+
+
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+sum(data$cp %in% c(0,1,2,3,4))
+check_data
+data$cp
+```
 
 * **3.2. Identifica i gestiona els valors extrems.**
 
