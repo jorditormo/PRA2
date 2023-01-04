@@ -72,12 +72,6 @@ data <- read.csv('../Dataset/heart.csv',header=T,sep=",")
 # s'examinen els valors resum de cada tipus de variable
 str(data)
 ```
-```{r echo=TRUE, message=FALSE, warning=FALSE}
-# Pot ser interessant discretitzar les variables age
-data["segment_age"] <- cut(data$age, breaks = c(0,25,35,45,55,65,100), labels = c("<25", "25-34", "35-44", "45-54","55-64",">65"))
-plot(data$segment_age)
-```
-
 
 # 3. Neteja de les dades.
 
@@ -223,10 +217,22 @@ cat("\t ·A part dels valors possibles (0,1), hi ha", sum(data$output %in% c(0,1
 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-# valors numèrics i categòrics separats
-data_num <- data[,c('age','trtbps','chol','thalachh','oldpeak')]
-data_cat <- data[,c('sex','cp','fbs','restecg','exng')]
 
+data$sex <- as.factor(data$sex)
+data$cp <- as.factor(data$cp)
+data$fbs <- as.factor(data$fbs)
+data$restecg <- as.factor(data$restecg)
+data$exng <- as.factor(data$exng)
+data$slp <- as.factor(data$slp)
+data$caa <- as.factor(data$caa)
+data$thall <- as.factor(data$thall)
+data$output <- as.factor(data$output)
+
+
+# valors numèrics i categòrics separats
+data_num <- data[,c('age', 'trtbps', 'chol', 'thalachh', 'oldpeak')]
+data_cat <- data[,c('sex','cp', 'fbs', 'restecg', 'exng', 'slp', 'caa', 'thall', 'output')]
+str(data)
 ```
 
 
