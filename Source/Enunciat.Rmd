@@ -9,7 +9,6 @@ output:
     toc: yes
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -18,66 +17,71 @@ knitr::opts_chunk$set(echo = TRUE)
 library(knitr)
 ```
 
-# 1. Descripció del dataset. 
+# 1. Descripció del dataset.
 
-Perquè és important i quina pregunta/problema pretén respondre?
+El dataset "Heart Attack Analysis & Prediction" és un conjunt de dades que conté informació sobre persones que han patit un atac de cor. Aquest dataset és important perquè pot ser utilitzat per entrenar models de predicció per preveure qui és més propens a patir un atac de cor en el futur. El dataset pot ajudar a respondre a la pregunta de quins són els factors de risc més importants per a la salut cardiovascular.
 
-El conjunt de dades “Heart Attack Analysis & Prediction dataset” s'ha obtingut de l'enllaç proporcionat a l'enunciat (https://www.kaggle.com/datasets/rashikrahmanpritom/heart-attackanalysis-prediction-dataset). Dels dos documents disponibles a l'enllaç, es treballarà amb el document `heart.csv`.
+El conjunt de dades s'ha obtingut de l'enllaç proporcionat a l'enunciat (<https://www.kaggle.com/datasets/rashikrahmanpritom/heart-attackanalysis-prediction-dataset>). Dels dos documents disponibles a l'enllaç, es treballarà amb el document `heart.csv`.
 
-* `age`: Edat del pacient
-* `sex`: Sexe del pacient
-* `cp` : Tipus de dolor toràcic.
-  * `1`: Angina de pit típica
-  * `2`: Angina de pit atípica
-  * `3`: Dolor no anginal
-  * `4`: Asimptomàtic
-* `trtbps`: Pressió arterial en repòs (in mm Hg)
-* `chol`: Colesterol en mg/dl obtingut mitjançant sensor d'IMC (índex de massa corporal)
-* `fbs`: Sucre en sang en dejú > 120 mg/dl
-  * `1`: Vertader
-  * `0`: Fals
-* `restecg`: Resultats electrocardiogràfics en repòs
-  * `0`: Normal
-  * `1`: Té anomalia de l'ona ST-T (inversions d'ona T i/o elevació o depressió ST de > 0,05 mV)
-  * `2`: Mostra una hipertròfia ventricular esquerra probable o definitiva segons el criteri d'Estes
-* `thalachh`: Freqüència cardíaca màxima aconseguida
-* `exng`: Exercici angina de pit induïda
-  * `1`: Sí
-  * `0`: No
-* `oldpeak`:  Depressió de ST induïda per l'exercici en relació amb el descans
-* `slp`: El pendent del segment ST d'exercici màxim
-  * `0`: Sense inclinar
-  * `1`: Pla
-  * `2`: Baixada
-* `caa`: Nombre de vasos principals del cor (0-4)
-* `thall`: Talassèmia
-  * `0`: Nul
-  * `1`: Defecte solucionat 
-  * `2`: Normal 
-  * `3`: Defecte reversible
-* `output`: Diagnòstic de malalties cardíaques (estat de malaltia angiogràfica)
-  * `0`: Estrenyiment < 50% del diàmetre. Menys possibilitats de patir malalties del cor.
-  * `1`: Estrenyiment > 50% del diàmetre. Més possibilitats de patir malalties del cor.
+-   `age`: Edat del pacient
+-   `sex`: Sexe del pacient
+-   `cp` : Tipus de dolor toràcic.
+    -   `1`: Angina de pit típica
+    -   `2`: Angina de pit atípica
+    -   `3`: Dolor no anginal
+    -   `4`: Asimptomàtic
+-   `trtbps`: Pressió arterial en repòs (in mm Hg)
+-   `chol`: Colesterol en mg/dl obtingut mitjançant sensor d'IMC (índex de massa corporal)
+-   `fbs`: Sucre en sang en dejú \> 120 mg/dl
+    -   `1`: Vertader
+    -   `0`: Fals
+-   `restecg`: Resultats electrocardiogràfics en repòs
+    -   `0`: Normal
+    -   `1`: Té anomalia de l'ona ST-T (inversions d'ona T i/o elevació o depressió ST de \> 0,05 mV)
+    -   `2`: Mostra una hipertròfia ventricular esquerra probable o definitiva segons el criteri d'Estes
+-   `thalachh`: Freqüència cardíaca màxima aconseguida
+-   `exng`: Exercici angina de pit induïda
+    -   `1`: Sí
+    -   `0`: No
+-   `oldpeak`: Depressió de ST induïda per l'exercici en relació amb el descans
+-   `slp`: El pendent del segment ST d'exercici màxim
+    -   `0`: Sense inclinar
+    -   `1`: Pla
+    -   `2`: Baixada
+-   `caa`: Nombre de vasos principals del cor (0-4)
+-   `thall`: Talassèmia
+    -   `0`: Nul
+    -   `1`: Defecte solucionat
+    -   `2`: Normal
+    -   `3`: Defecte reversible
+-   `output`: Diagnòstic de malalties cardíaques (estat de malaltia angiogràfica)
+    -   `0`: Estrenyiment \< 50% del diàmetre. Menys possibilitats de patir malalties del cor.
+    -   `1`: Estrenyiment \> 50% del diàmetre. Més possibilitats de patir malalties del cor.
 
 # 2. Integració i selecció.
 
-Integració i selecció de les dades d’interès a analitzar. Pot ser el resultat d’addicionar diferents datasets o una subselecció útil de les dades originals, en base a l’objectiu que es vulgui aconseguir.
+Integració i selecció de les dades d'interès a analitzar. Pot ser el resultat d'addicionar diferents datasets o una subselecció útil de les dades originals, en base a l'objectiu que es vulgui aconseguir.
 
 S'utilitza el document `heart.csv` que consta de 303 registres i 14 atributs
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 # Es carrega el fitxer de dades en un objecte amb identificador denominat data
-data <- read.csv('../Dataset/heart.csv',header=T,sep=",")
+data_raw <- read.csv('../Dataset/heart.csv',header=T,sep=",")
 
 # s'examinen els valors resum de cada tipus de variable
-str(data)
+str(data_raw)
 ```
 
 # 3. Neteja de les dades.
 
-* **3.1. Les dades contenen zeros o elements buits? Gestiona cadascun d’aquests casos.**
+-   **3.1. Les dades contenen zeros o elements buits? Gestiona cadascun d'aquests casos.**
 
-En primer lloc, es comprova que tots els atributs ténen sentit segons la seva descripció i valors possibles.
+En primer lloc, es comprova que tots els atributs tenen sentit segons la seva descripció i valors possibles.
+
+```{r}
+data <- data_raw
+summary(data)
+```
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -86,7 +90,7 @@ En primer lloc, es comprova que tots els atributs ténen sentit segons la seva d
 # --------------------
 cat("\"Tipus de dolor toràcic\" (cp): \n")
 cat("\t ·El número de zeros a l'atribut cp és:", nrow(data[data$cp == 0, ]) ,".\n")
-cat("\t ·A part dels valors possibles (1,2,3 i 4) i elemens buits, hi ha", sum(data$cp %in% c(0,1,2,3,4)) - nrow(data) ,"resistres amb altres valors.\n")
+cat("\t ·A part dels valors possibles (1, 2, 3 i 4) i elements buits, hi ha", sum(data$cp %in% c(0,1,2,3,4)) - nrow(data) ,"registres amb altres valors.\n")
 
 # --------------------
 # trtbps
@@ -136,13 +140,14 @@ if (all.equal(data$chol, as.integer(data$chol)) ){
 # fbs
 # --------------------
 cat("\"Sucre en sang en dejú\" (fbs): \n")
-cat("\t ·A part dels valors possibles (0,1), hi ha", sum(data$fbs %in% c(0,1)) - nrow(data) ,"resistres amb altres valors.\n")
+cat("\t ·A part dels valors possibles (0, 1), hi ha", sum(data$fbs %in% c(0,1)) - nrow(data) ,"registres amb altres valors.\n")
+
 
 # --------------------
 # restecg
 # --------------------
 cat("\"Resultats electrocardiogràfics en repòs\" (restecg): \n")
-cat("\t ·A part dels valors possibles (0,1,2), hi ha", sum(data$restecg %in% c(0,1,2)) - nrow(data) ,"resistres amb altres valors.\n")
+cat("\t ·A part dels valors possibles (0, 1, 2), hi ha", sum(data$restecg %in% c(0,1,2)) - nrow(data) ,"registres amb altres valors.\n")
 
 # --------------------
 # thalachh
@@ -170,7 +175,7 @@ if (all.equal(data$thalachh, as.integer(data$thalachh)) ){
 # exng
 # --------------------
 cat("\"Exercici angina de pit induïda\" (exng): \n")
-cat("\t ·A part dels valors possibles (0,1), hi ha", sum(data$exng %in% c(0,1)) - nrow(data) ,"resistres amb altres valors.\n")
+cat("\t ·A part dels valors possibles (0, 1), hi ha", sum(data$exng %in% c(0,1)) - nrow(data) ,"registres amb altres valors.\n")
 
 # --------------------
 # oldpeak
@@ -193,88 +198,173 @@ data$oldpeak <- as.numeric(data$oldpeak)
 # slp
 # --------------------
 cat("\"El pendent del segment ST d’exercici màxim\" (slp): \n")
-cat("\t ·A part dels valors possibles (0,1,2), hi ha", sum(data$slp %in% c(0,1,2)) - nrow(data) ,"resistres amb altres valors.\n")
+cat("\t ·A part dels valors possibles (0, 1, 2), hi ha", sum(data$slp %in% c(0,1,2)) - nrow(data) ,"registres amb altres valors.\n")
 
 # --------------------
 # caa
 # --------------------
 cat("\"Nombre de vasos principals del cor\" (caa): \n")
-cat("\t ·A part dels valors possibles (0,1,2,3,4), hi ha", sum(data$caa %in% c(0,1,2,3,4)) - nrow(data) ,"resistres amb altres valors.\n")
+cat("\t ·A part dels valors possibles (0, 1, 2, 3, 4), hi ha", sum(data$caa %in% c(0,1,2,3,4)) - nrow(data) ,"registres amb altres valors.\n")
 
 # --------------------
 # thall
 # --------------------
 cat("\" Talassèmia\" (thall): \n")
-cat("\t ·A part dels valors possibles (0,1,2,3,4), hi ha", sum(data$thall %in% c(0,1,2,3,4)) - nrow(data) ,"resistres amb altres valors.\n")
+cat("\t ·A part dels valors possibles (0, 1, 2, 3, 4), hi ha", sum(data$thall %in% c(0,1,2,3,4)) - nrow(data) ,"registres amb altres valors.\n")
 
 # --------------------
 # output
 # --------------------
 cat("\"Diagnòstic de malalties cardíaques\" (output): \n")
-cat("\t ·A part dels valors possibles (0,1), hi ha", sum(data$output %in% c(0,1,2,3)) - nrow(data) ,"resistres amb altres valors.\n")
+cat("\t ·A part dels valors possibles (0, 1), hi ha", sum(data$output %in% c(0,1,2,3)) - nrow(data) ,"registres amb altres valors.\n")
 
 ```
 
-Segons la descripció dels valors interessa factorizar-ne alguns ja que són variables categòriques amb un número finit de valors.
+Veiem com les úniques variables amb anomàlies són "cp" (Tipus de dolor toràcic) i "oldpeak" (Depressió de ST induïda per l'exercici en relació amb el descans). Les dues variables contenen 0 quan no és tracta d'un valor possible per aquestes columnes. Transformem tots aquests 0 a NA:
 
-```{r echo=TRUE, message=FALSE, warning=FALSE}
-data$sex <- as.factor(data$sex)
-data$cp <- as.factor(data$cp)
-data$fbs <- as.factor(data$fbs)
-data$restecg <- as.factor(data$restecg)
-data$exng <- as.factor(data$exng)
-data$slp <- as.factor(data$slp)
-data$caa <- as.factor(data$caa)
-data$thall <- as.factor(data$thall)
-data$output <- as.factor(data$output)
+```{r}
+data[data$cp == 0, "cp"] <- NA
+data[data$oldpeak == 0, "oldpeak"] <- NA
 
-# valors numèrics i categòrics separats
-data_num <- data[,c('age', 'trtbps', 'chol', 'thalachh', 'oldpeak')]
-data_cat <- data[,c('sex','cp', 'fbs', 'restecg', 'exng', 'slp', 'caa', 'thall', 'output')]
+summary(data$cp)
+summary(data$oldpeak)
+```
+
+Com les columnes cp i oldpeak tenen més d'un 30% de valors NA, no tindrem en compte aquestes dades per la nostra anàlisi, degut a que no aportarien prou informació rellevant.
+
+```{r}
+data <- data[, setdiff(names(data), "cp")]
+data <- data[, setdiff(names(data), "oldpeak")]
 str(data)
+
 ```
 
-```{r echo=TRUE, message=FALSE, warning=FALSE}
-summary(data)
-```
+Finalment, ens quedem amb 13 variables i 204 registres.
 
-* **3.2. Identifica i gestiona els valors extrems.**
+-   **3.2. Identifica i gestiona els valors extrems.**
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-par(mfrow=c(2,7), mai=c(0.1,0.0,0.2, 0.3))
+par(mfrow=c(2,6),mai=c(0.1, 0.0, 0.2, 0.3))
+par(oma=c(0, 2, 0, 0) + 0.1)
 for (i in colnames(data)) boxplot(data[i], main = i)
+
 ```
 
+```{r}
+res_trtbps <- boxplot(data$trtbps,plot=FALSE)$out
+res_trtbps
+```
+
+```{r}
+res_chol <- boxplot(data$chol,plot=FALSE)$out
+res_chol
+```
+
+```{r}
+res_fbs <- boxplot(data$fbs,plot=FALSE)$out
+res_fbs
+```
+
+```{r}
+boxplot(data$thalachh,plot=FALSE)$out
+```
+
+```{r}
+boxplot(data$caa,plot=FALSE)$out
+```
+
+```{r}
+boxplot(data$thall,plot=FALSE)$out
+```
+
+```{r}
+data_clean <- subset(data, !data$trtbps %in% res_trtbps)
+data_clean <- subset(data, !data$chol %in% res_chol)
+data_clean <- subset(data, !data$fbs %in% res_fbs)
+str(data_clean)
+```
+
+```{r}
+if(!require('dplyr')) install.packages('dplyr'); library('dplyr')
+
+# Definim la funció de normalització
+ nor <-function(x) { (x -min(x))/(max(x)-min(x))}
+ 
+# Guardem un nou dataset normalitzat
+data_num$type <- NULL
+data_num_norm <- as.data.frame(lapply(data_num, nor))
+
+summary(data_num_norm)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+if (!require('dbscan')) install.packages('dbscan'); library('dbscan')
+set.seed(1234567)
+
+res <- optics(data_num_norm, minPts = 12)
+res
+### Obtenim la ordenació de les observacions o punts
+res$order
+```
+
+```{r}
+### Extracció d'un clústering DBSCAN tallant l'accessibilitat en el valor eps_cl
+set.seed(1234567)
+
+res <- extractDBSCAN(res, eps_cl = 0.29)
+res
+plot(res)
+hullplot(data_num_norm, res)
+```
 
 # 4. Anàlisi de les dades.
 
-* **4.1. Selecció dels grups de dades que es volen analitzar/comparar (p. e., si es volen comparar grups de dades, quins són aquests grups i quins tipus d’anàlisi s’aplicaran?).**
+-   **4.1. Selecció dels grups de dades que es volen analitzar/comparar (p. e., si es volen comparar grups de dades, quins són aquests grups i quins tipus d'anàlisi s'aplicaran?).**
 
-* **4.2. Comprovació de la normalitat i homogeneïtat de la variància.**
+-   **4.2. Comprovació de la normalitat i homogeneïtat de la variància.**
 
-* **4.3. Aplicació de proves estadístiques per comparar els grups de dades. En funció de les dades i de l’objectiu de l’estudi, aplicar proves de contrast d’hipòtesis, correlacions, regressions, etc. Aplicar almenys tres mètodes d’anàlisi diferents.**
+-   **4.3. Aplicació de proves estadístiques per comparar els grups de dades. En funció de les dades i de l'objectiu de l'estudi, aplicar proves de contrast d'hipòtesis, correlacions, regressions, etc. Aplicar almenys tres mètodes d'anàlisi diferents.**
+
+    Segons la descripció dels valors interessa factorizar-ne alguns ja que són variables categòriques amb un número finit de valors.
+
+    ```{r echo=TRUE, message=FALSE, warning=FALSE}
+    data$sex <- as.factor(data$sex)
+    #data$cp <- as.factor(data$cp)
+    data$fbs <- as.factor(data$fbs)
+    data$restecg <- as.factor(data$restecg)
+    data$exng <- as.factor(data$exng)
+    data$slp <- as.factor(data$slp)
+    data$caa <- as.factor(data$caa)
+    data$thall <- as.factor(data$thall)
+    data$output <- as.factor(data$output)
+
+    # valors numèrics i categòrics separats
+    data_num <- data[,c('age', 'trtbps', 'chol', 'thalachh')]
+    data_cat <- data[,c('sex','fbs', 'restecg', 'exng', 'slp', 'caa', 'thall', 'output')]
+    str(data)
+    ```
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-library(corrplot)
-corrplot(data, method="square", type="upper",)
+if(!require("corrplot")) install.packages("corrplot"); library("corrplot")
+if(!require('dplyr')) install.packages('dplyr'); library('dplyr')
+
+res<-cor(data_num_norm)
+corrplot(res, method="color",tl.col="black", tl.srt=30, order = "AOE", 
+   number.cex=0.75,sig.level = 0.01, addCoef.col = "black")
 ```
 
-# 5. Representació dels resultats a partir de taules i gràfiques. 
+# 5. Representació dels resultats a partir de taules i gràfiques.
 
-Aquest apartat es pot respondre al llarg de la pràctica, sense la necessitat de concentrar totes les representacions en aquest punt de la pràctica. 
+Aquest apartat es pot respondre al llarg de la pràctica, sense la necessitat de concentrar totes les representacions en aquest punt de la pràctica.
 
-# 6. Resolució del problema. 
+# 6. Resolució del problema.
 
 A partir dels resultats obtinguts, quines són les conclusions? Els resultats permeten respondre al problema?
 
-# 7. Codi. 
+# 7. Codi.
 
-Cal adjuntar el codi, preferiblement en R, amb el que s’ha realitzat la neteja, anàlisi i representació de les dades. Si ho preferiu, també podeu treballar en Python.
+Cal adjuntar el codi, preferiblement en R, amb el que s'ha realitzat la neteja, anàlisi i representació de les dades. Si ho preferiu, també podeu treballar en Python.
 
-# 8. Vídeo. 
+# 8. Vídeo.
 
-Realitzar un breu vídeo explicatiu de la pràctica (màxim 10 minuts) on tots els integrants de l'equip expliquin amb les seves pròpies paraules el desenvolupament de la pràctica, basant-se en les preguntes de l'enunciat per a justificar i explicar el codi desenvolupat. Aquest vídeo s'haurà de lliurar a través d'un enllaç al Google Drive de la UOC (https://drive.google.com/…), juntament
-amb l’enllaç al repositori Git lliurat.
-
-
-
+Realitzar un breu vídeo explicatiu de la pràctica (màxim 10 minuts) on tots els integrants de l'equip expliquin amb les seves pròpies paraules el desenvolupament de la pràctica, basant-se en les preguntes de l'enunciat per a justificar i explicar el codi desenvolupat. Aquest vídeo s'haurà de lliurar a través d'un enllaç al Google Drive de la UOC (<https://drive.google.com/>...), juntament amb l'enllaç al repositori Git lliurat.
