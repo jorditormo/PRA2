@@ -321,19 +321,19 @@ for (i in colnames(data_num)) boxplot(data_num[i], main = i)
         Per tant, és interessant separar les dades segons sexe.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-data_men = data_raw[data_raw$sex == 1,]
-data_women = data_raw[data_raw$sex == 0,]
+data_men = data[data$sex == 1,]
+data_women = data[data$sex == 0,]
 ```
 
     -   Segons els articles anteriors, podria ser interessant separar també els pacients joves. Els mateixos articles consideren joves a pacients de de 50 anys o menys. Ara bé, el dataset d'estudi conté dades de pacients supervivents a un atac de cor i si es vol estudiar la mortalitat d'un atac de cor en pacients joves s'hauria de contar amb dades de pacients que no han sobreviscut.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-data_raw["age_segment"] <- cut(data_raw$age, 
-                               breaks = c(0,50,120), 
-                               labels = c(1, 0))
+data["age_segment"] <- cut(data$age, 
+                           breaks = c(0,50,120), 
+                           labels = c(1, 0))
 
-data_young = data_raw[data_raw$age_segment == 1,]
-data_old = data_raw[data_raw$age_segment == 0,]
+data_young = data[data$age_segment == 1,]
+data_old = data[data$age_segment == 0,]
 ```
 
 -   **4.2. Comprovació de la normalitat i homogeneïtat de la variància.**
@@ -408,68 +408,93 @@ shapiro.test(oldpeak_w)
 fligner.test(list(oldpeak_m,oldpeak_w))
 ```
 
-
-
 -   **4.3. Aplicació de proves estadístiques per comparar els grups de dades. En funció de les dades i de l'objectiu de l'estudi, aplicar proves de contrast d'hipòtesis, correlacions, regressions, etc. Aplicar almenys tres mètodes d'anàlisi diferents.**
+
+  - Contrast d'hipòtesis:
+  - Age: Com la normalitat i l’homoscedasticitat es compleixen es poden aplicar proves per contrast d'hipòtesis de tipus paramètric.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 t.test(data_men$age, data_women$age)
 ```
 
+El p-valor resultant de la prova _t de Student_ és més gran que el nivell de significació, això vol dir que no s’observen diferències estadísticament significatives entre els grups de dades.
+
+  - trtbp: Com la normalitat i l’homoscedasticitat es compleixen es poden aplicar proves per contrast d'hipòtesis de tipus paramètric.
+
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 t.test(data_men$trtbps_n, data_women$trtbps_n)
 ```
+
+El p-valor resultant de la prova _t de Student_ és més gran que el nivell de significació, això vol dir que no s’observen diferències estadísticament significatives entre els grups de dades.
+
+  - chol: Com la normalitat i l’homoscedasticitat no es compleixen no es poden aplicar proves per contrat d'hipòtesis de tipus paramètric però es poden aplicar proves no paramètriques com Wilcoxon.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 wilcox.test(data_women$chol, data_men$chol, alternative="greater")
 ```
 
-El resultat del test permet rebutjar la hipòtesi nul·la d’igualtat de nivells de colesterol i, per tant, es conclou que els nivells de colesterol de les dones són supeiors que la dels homes.
+El resultat del test permet rebutjar la hipòtesi nul·la d'igualtat de nivells de colesterol i, per tant, es conclou que el nivell de colesterol de les dones és supeior que la dels homes.
 
+  - thalachh: Com la normalitat i l’homoscedasticitat no es compleixen no es poden aplicar proves per contrat d'hipòtesis de tipus paramètric però es poden aplicar proves no paramètriques com Wilcoxon.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 wilcox.test(data_men$thalachh, data_women$thalachh, alternative="greater")
 ```
 
-El resultat del test NO permet rebutjar la hipòtesi nul·la d’igualtat de freqüència cardíaca màxima aconseguida i, per tant, es conclou que la freqüència cardíaca màxima aconseguida no presenta diferències estadísticament significatives entre homes i dones.
+El resultat del test NO permet rebutjar la hipòtesi nul·la d'igualtat de freqüència cardíaca màxima aconseguida i, per tant, es conclou que la freqüència cardíaca màxima aconseguida no presenta diferències estadísticament significatives entre homes i dones.
 
+  - oldpeak: Com la normalitat i l’homoscedasticitat no es compleixen no es poden aplicar proves per contrat d'hipòtesis de tipus paramètric però es poden aplicar proves no paramètriques com Wilcoxon.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 wilcox.test(data_men$oldpeak, data_women$oldpeak, alternative="greater")
 ```
 
-El resultat del test NO permet rebutjar la hipòtesi nul·la d’igualtat de depressió de ST induïda per l'exercici en relació amb el descans i, per tant, es conclou que la depressió de ST induïda per l'exercici en relació amb el descans no presenta diferències estadísticament significatives entre homes i dones.
+El resultat del test NO permet rebutjar la hipòtesi nul·la d'igualtat de depressió de ST induïda per l'exercici en relació amb el descans i, per tant, es conclou que la depressió de ST induïda per l'exercici en relació amb el descans no presenta diferències estadísticament significatives entre homes i dones.
 
+Segons la descripció dels valors interessa factorizar-ne alguns ja que són variables categòriques amb un número finit de valors.
 
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+data$sex <- as.factor(data$sex)
+data$fbs <- as.factor(data$fbs)
+data$restecg <- as.factor(data$restecg)
+data$exng <- as.factor(data$exng)
+data$slp <- as.factor(data$slp)
+data$caa <- as.factor(data$caa)
+data$thall <- as.factor(data$thall)
+data$output <- as.factor(data$output)
 
+# valors numèrics i categòrics separats
+#data_num <- data[,c('age', 'trtbps', 'chol', 'thalachh')]
+#data_cat <- data[,c('sex','fbs', 'restecg', 'exng', 'slp', 'caa', 'thall', 'output')]
+#str(data)
+```
 
-    Segons la descripció dels valors interessa factorizar-ne alguns ja que són variables categòriques amb un número finit de valors.
+- Estudi de correlació lineal
 
-    ```{r echo=TRUE, message=FALSE, warning=FALSE}
-    data$sex <- as.factor(data$sex)
-    #data$cp <- as.factor(data$cp)
-    data$fbs <- as.factor(data$fbs)
-    data$restecg <- as.factor(data$restecg)
-    data$exng <- as.factor(data$exng)
-    data$slp <- as.factor(data$slp)
-    data$caa <- as.factor(data$caa)
-    data$thall <- as.factor(data$thall)
-    data$output <- as.factor(data$output)
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+tau_corr <- cor(data_num)
+print(tau_corr)
+```
 
-    # valors numèrics i categòrics separats
-    data_num <- data[,c('age', 'trtbps', 'chol', 'thalachh')]
-    data_cat <- data[,c('sex','fbs', 'restecg', 'exng', 'slp', 'caa', 'thall', 'output')]
-    str(data)
-    ```
+Es visualitza gràficament
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 if(!require("corrplot")) install.packages("corrplot"); library("corrplot")
 if(!require('dplyr')) install.packages('dplyr'); library('dplyr')
 
-res<-cor(data_num_norm)
-corrplot(res, method="color",tl.col="black", tl.srt=30, order = "AOE", 
-   number.cex=0.75,sig.level = 0.01, addCoef.col = "black")
+res <- cor(data_num)
+corrplot(res, 
+         upper="number",
+         tl.srt=30, 
+         number.cex=0.7,
+         tl.cex=0.8)
 ```
+
+Es pot observar que els atributs amb més correlació són:
+- `age` (edat) i `thalachh` (Pressió arterial en repòs) ~40%
+- `thalachh` (Pressió arterial en repòs) i `oldpeak` (Depressió de ST induïda per l'exercici en relació amb el descans) ~35%
+La resta, tot i tenir correlacions inferiors al 35%
+
 
 # 5. Representació dels resultats a partir de taules i gràfiques.
 
