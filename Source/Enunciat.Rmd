@@ -314,16 +314,16 @@ for (i in colnames(data_num)) boxplot(data_num[i], main = i)
 
 -   **4.1. Selecció dels grups de dades que es volen analitzar/comparar (p. e., si es volen comparar grups de dades, quins són aquests grups i quins tipus d'anàlisi s'aplicaran?).**
 
-   A l'hora d'anarlizar les dades, pot ser interessant separar les dades en diferents grups:
+    A l'hora d'analitzarles dades, pot ser interessant separar les dades en diferents grups:
 
     -   En primer lloc, segons el sexe del pacient. Segons el [National Heart, Lung, and Blood Institute (NHLBI)](https://www.nhlbi.nih.gov/about) estudia desde 2020 les [diferències d'atacs cardíacs entre homes i dones joves](https://www.nhlbi.nih.gov/news/2020/study-explores-heart-attack-differences-among-younger-women-and-men) ja que segons les fonts consultades, com per exemple l'[European Society of Cardiology](https://www.escardio.org/The-ESC/Press-Office/Press-releases/young-women-who-suffer-a-heart-attack-have-worse-outcomes-than-men) [les dones joves que pateixen un atac de cor tenen pitjors resultats que els homes](https://www.escardio.org/The-ESC/Press-Office/Press-releases/young-women-who-suffer-a-heart-attack-have-worse-outcomes-than-men).
 
         Per tant, és interessant separar les dades segons sexe.
 
-```{r echo=TRUE, message=FALSE, warning=FALSE}
-data_men = data_raw[data_raw$sex == 1,]
-data_women = data_raw[data_raw$sex == 0,]
-```
+        ```{r echo=TRUE, message=FALSE, warning=FALSE}
+        data_men = data_raw[data_raw$sex == 1,]
+        data_women = data_raw[data_raw$sex == 0,]
+        ```
 
     -   Segons els articles anteriors, podria ser interessant separar també els pacients joves. Els mateixos articles consideren joves a pacients de de 50 anys o menys. Ara bé, el dataset d'estudi conté dades de pacients supervivents a un atac de cor i si es vol estudiar la mortalitat d'un atac de cor en pacients joves s'hauria de contar amb dades de pacients que no han sobreviscut.
 
@@ -335,11 +335,13 @@ data_raw["age_segment"] <- cut(data_raw$age,
 data_young = data_raw[data_raw$age_segment == 1,]
 data_old = data_raw[data_raw$age_segment == 0,]
 ```
+
 -   **4.2. Comprovació de la normalitat i homogeneïtat de la variància.**
 
 Es comprova la normalitat i la homogeneïtat de la variància de les diferents variàbles numèriques `age`, `trtbps`, `chol`, `thalachh` i `oldpeak`
 
-- `age`
+-   `age`
+
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 age_m <- data_men$age
 age_w <- data_women$age
@@ -348,12 +350,11 @@ shapiro.test(age_w)
 fligner.test(list(age_m,age_w))
 ```
 
-El test `fligner.test` de R ens mostra un valor de `p` major a $0.05$ i per tant no es pot rebutjar la hipòtesi nul·la d’homoscedasticitat i es conclou que la variable age no presenta variàncies estadísticament diferents per als diferents grups d'homes i dones.
+El test `fligner.test` de R ens mostra un valor de `p` major a $0.05$ i per tant no es pot rebutjar la hipòtesi nul·la d'homoscedasticitat i es conclou que la variable age no presenta variàncies estadísticament diferents per als diferents grups d'homes i dones.
 
-El test Shapiro-Wilk en el conjunt dels homes té un `p-value` molt proper al al nivell de significació generalment utilitzat ($\alpha=0.05$), i en el cas de les dones és superior. Per tant, es conclou que no es pot rebutjar aquesta hipòtesi i s’assumeix que les dades segueixen una distribució normal.
+El test Shapiro-Wilk en el conjunt dels homes té un `p-value` molt proper al al nivell de significació generalment utilitzat ($\alpha=0.05$), i en el cas de les dones és superior. Per tant, es conclou que no es pot rebutjar aquesta hipòtesi i s'assumeix que les dades segueixen una distribució normal.
 
-
-- `trtbps`
+-   `trtbps`
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
