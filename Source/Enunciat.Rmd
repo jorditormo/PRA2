@@ -365,11 +365,83 @@ shapiro.test(trtbps_w)
 fligner.test(list(trtbps_m,trtbps_w))
 ```
 
+El test Shapiro-Wilk tant en el conjunt d'homes i dones dóna un `p-value` molt petit i es conclou que les dades no compten amb una distribució normal. Es pot obersvar a continuació que si es fa una transofmració logarítmica $(trtbps\_n=\log{(trtbps)})$ els `p-value` Shapiro-Wilk test i Fligner-Killeen test són majors al nivell se significació i s'assumeix que les dades segueixen una distribució normal i la variable no presenta variàncies estadísticament diferents per als diferents grups d'homes i dones.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+data_men$trtbps_n <- log(data_men$trtbps)
+data_women$trtbps_n <- log(data_women$trtbps)
+shapiro.test(data_men$trtbps_n)
+shapiro.test(data_women$trtbps_n)
+fligner.test(list(data_men$trtbps_n,data_women$trtbps_n))
+```
+
+-   `chol`
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+chol_m <- data_men$chol
+chol_w <- data_women$chol
+shapiro.test(chol_m)
+shapiro.test(chol_w)
+fligner.test(list(chol_m,chol_w))
+```
+
+Semblant al cas anterior el test Shapiro-Wilk del conjunt de les dones dóna un `p-value` molt petit i es conclou que les dades no compten amb una distribució normal, però si el dels homes. Per altra banda, el `p.value` del Flinger-Killeen test és també molt petit. En aquest cas s'aplicaran proves no paramètriques (Wilcoxon)
+
+-   `thalachh`
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+thalachh_m <- data_men$thalachh
+thalachh_w <- data_women$thalachh
+shapiro.test(thalachh_m)
+shapiro.test(thalachh_w)
+fligner.test(list(thalachh_m,thalachh_w))
+```
+
+-   `oldspeak`
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+oldpeak_m <- data_men$oldpeak
+oldpeak_w <- data_women$oldpeak
+shapiro.test(oldpeak_m)
+shapiro.test(oldpeak_w)
+fligner.test(list(oldpeak_m,oldpeak_w))
+```
+
+
+
 -   **4.3. Aplicació de proves estadístiques per comparar els grups de dades. En funció de les dades i de l'objectiu de l'estudi, aplicar proves de contrast d'hipòtesis, correlacions, regressions, etc. Aplicar almenys tres mètodes d'anàlisi diferents.**
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 t.test(data_men$age, data_women$age)
 ```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+t.test(data_men$trtbps_n, data_women$trtbps_n)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+wilcox.test(data_women$chol, data_men$chol, alternative="greater")
+```
+
+El resultat del test permet rebutjar la hipòtesi nul·la d’igualtat de nivells de colesterol i, per tant, es conclou que els nivells de colesterol de les dones són supeiors que la dels homes.
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+wilcox.test(data_men$thalachh, data_women$thalachh, alternative="greater")
+```
+
+El resultat del test NO permet rebutjar la hipòtesi nul·la d’igualtat de freqüència cardíaca màxima aconseguida i, per tant, es conclou que la freqüència cardíaca màxima aconseguida no presenta diferències estadísticament significatives entre homes i dones.
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+wilcox.test(data_men$oldpeak, data_women$oldpeak, alternative="greater")
+```
+
+El resultat del test NO permet rebutjar la hipòtesi nul·la d’igualtat de depressió de ST induïda per l'exercici en relació amb el descans i, per tant, es conclou que la depressió de ST induïda per l'exercici en relació amb el descans no presenta diferències estadísticament significatives entre homes i dones.
+
+
+
 
     Segons la descripció dels valors interessa factorizar-ne alguns ja que són variables categòriques amb un número finit de valors.
 
