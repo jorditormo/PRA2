@@ -491,9 +491,11 @@ corrplot(res,
 ```
 
 Es pot observar que els atributs amb més correlació són:
-- `age` (edat) i `thalachh` (Pressió arterial en repòs) ~40%
-- `thalachh` (Pressió arterial en repòs) i `oldpeak` (Depressió de ST induïda per l'exercici en relació amb el descans) ~35%
-La resta, tot i tenir correlacions inferiors al 35%
+- `age` (edat) i `thalachh` (Pressió arterial en repòs) ~40%: Generalment, els valors normals de la pressió aterial en repós augmenten amb l'edat.
+- `thalachh` (Pressió arterial en repòs) i `oldpeak` (Depressió de ST induïda per l'exercici en relació amb el descans) ~35%: La Depressió de ST es refereix a una troballa en un electrocardiograma , en què el traç en el segment ST és anormalment baix per sota de la línia de base. Això pot ser degut a certes dolències (sistèmiques o no) que també afecten a la pressió arterial.
+La resta, tot i tenir correlacions significatives, inferiors al 35%
+
+En tots els casos, es considera que no hi ha una correlació prou significativa (>|50%|) com per tenir que eliminar l'atribut.
 
 
 # 5. Representació dels resultats a partir de taules i gràfiques.
