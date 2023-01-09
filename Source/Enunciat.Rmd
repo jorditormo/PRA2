@@ -320,10 +320,10 @@ for (i in colnames(data_num)) boxplot(data_num[i], main = i)
 
         Per tant, és interessant separar les dades segons sexe.
 
-        ```{r echo=TRUE, message=FALSE, warning=FALSE}
-        data_men = data_raw[data_raw$sex == 1,]
-        data_women = data_raw[data_raw$sex == 0,]
-        ```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+data_men = data_raw[data_raw$sex == 1,]
+data_women = data_raw[data_raw$sex == 0,]
+```
 
     -   Segons els articles anteriors, podria ser interessant separar també els pacients joves. Els mateixos articles consideren joves a pacients de de 50 anys o menys. Ara bé, el dataset d'estudi conté dades de pacients supervivents a un atac de cor i si es vol estudiar la mortalitat d'un atac de cor en pacients joves s'hauria de contar amb dades de pacients que no han sobreviscut.
 
@@ -366,6 +366,10 @@ fligner.test(list(trtbps_m,trtbps_w))
 ```
 
 -   **4.3. Aplicació de proves estadístiques per comparar els grups de dades. En funció de les dades i de l'objectiu de l'estudi, aplicar proves de contrast d'hipòtesis, correlacions, regressions, etc. Aplicar almenys tres mètodes d'anàlisi diferents.**
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+t.test(data_men$age, data_women$age)
+```
 
     Segons la descripció dels valors interessa factorizar-ne alguns ja que són variables categòriques amb un número finit de valors.
 
