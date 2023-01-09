@@ -241,7 +241,7 @@ for (i in colnames(data_num)) boxplot(data_num[i], main = i)
 
 ```
 
-En aquests gràfics podem veure que totes les columnes excepte "age" tenen punts individuals fora de les bigues, aquests valors són els que s'han considerat com extrems. A continuació es mostren aquests valors extrems per a cada variable:
+En aquests gràfics podem veure que totes les columnes excepte "age" tenen punts individuals fora de les bigues, aquests valors són els que s'han considerat com extrems. A continuació es mostren aquests outliers per a cada variable:
 
 Valors extrems de la variable "trtbps" (Pressió arterial en repòs (in mm Hg)):
 
@@ -271,7 +271,7 @@ res_oldpeak <- boxplot(data$oldpeak,plot=FALSE)$out
 res_oldpeak
 ```
 
-Per gestionar aquests valors outliers s'ha decidit pasar-los a NA's per imputar-los després utilitzant l'algorisme d'aprenentatge no supervisat KNN. Aquest algorisme es basa en el principi que els punts de dades similars tindran valors similars.
+Per gestionar aquests valors outliers s'ha decidit passar-los a NA's per imputar-los, després, utilitzant l'algorisme d'aprenentatge no supervisat KNN. Aquest algorisme es basa en el principi que els punts de dades similars tindran valors similars.
 
 Passem a NA tots els outliers:
 
