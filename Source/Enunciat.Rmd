@@ -227,26 +227,21 @@ data <- data[, setdiff(names(data), "cp")]
 str(data)
 ```
 
-Creem dos dataset on separem les variables numèriques de les categòriques:
-
-```{r}
-
-data_num <- data[,c('age', 'trtbps', 'chol', 'thalachh', 'oldpeak')]
-data_cat <- data[,c('sex','fbs', 'restecg', 'exng', 'slp', 'caa', 'thall', 'output')]
-```
-
 -   **3.2. Identifica i gestiona els valors extrems.**
 
 Per poder veure les distribucions de les variables e identificar els valors extrems o outliers, presentem uns gràfics de tipus boxplot per a les variables numèriques:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+data_num <- data[,c('age', 'trtbps', 'chol', 'thalachh', 'oldpeak')]
+
 par(mfrow=c(1,5),mai=c(0.1, 0.0, 0.2, 0.3))
 par(oma=c(0, 2, 0, 0) + 0.1)
 for (i in colnames(data_num)) boxplot(data_num[i], main = i)
 
 ```
 
-En aquests gràfics podem veure que totes les columnes excepte "age" tenen punts individuals fora de les bigues, aquests valors són els que s'han considerat com extrems. Anem a analitzar-los cas a cas.
+En aquests gràfics podem veure que totes les columnes excepte "age" tenen punts individuals fora de les bigues, aquests valors són els que s'han considerat com extrems. A continuació es mostren aquests valors extrems per a cada variable:
 
 Valors extrems de la variable "trtbps" (Pressió arterial en repòs (in mm Hg)):
 
@@ -255,57 +250,64 @@ res_trtbps <- boxplot(data$trtbps,plot=FALSE)$out
 res_trtbps
 ```
 
+Valors extrems de la variable "Chol" (Colesterol en mg/dl obtingut mitjançant sensor d'IMC (índex de massa corporal)):
+
 ```{r}
 res_chol <- boxplot(data$chol,plot=FALSE)$out
 res_chol
 ```
 
-```{r}
-boxplot(data$thalachh,plot=FALSE)$out
-```
+Valors extrems de la variable "thalachh" (Freqüència cardíaca màxima aconseguida):
 
 ```{r}
-boxplot(data$oldpeak,plot=FALSE)$out
+res_thalachh <- boxplot(data$thalachh,plot=FALSE)$out
+res_thalachh
 ```
+
+Valors extrems de la variable "oldpeak" (Depressió de ST induïda per l'exercici en relació amb el descans):
 
 ```{r}
-data_clean <- subset(data, !data$trtbps %in% res_trtbps)
-data_clean <- subset(data, !data$chol %in% res_chol)
-data_clean <- subset(data, !data$fbs %in% res_fbs)
-str(data_clean)
+res_oldpeak <- boxplot(data$oldpeak,plot=FALSE)$out
+res_oldpeak
 ```
+
+Per gestionar aquests valors outliers s'ha decidit pasar-los a NA's per imputar-los després utilitzant l'algorisme d'aprenentatge no supervisat KNN. Aquest algorisme es basa en el principi que els punts de dades similars tindran valors similars.
+
+Passem a NA tots els outliers:
 
 ```{r}
-if(!require('dplyr')) install.packages('dplyr'); library('dplyr')
-
-# Definim la funció de normalització
- nor <-function(x) { (x -min(x))/(max(x)-min(x))}
- 
-# Guardem un nou dataset normalitzat
-data_num$type <- NULL
-data_num_norm <- as.data.frame(lapply(data_num, nor))
-
-summary(data_num_norm)
+data$trtbps[data$trtbps %in% res_trtbps] <- NA
+data$chol[data$chol %in% res_chol] <- NA
+data$thalachh[data$thalachh %in% res_thalachh] <- NA
+data$oldpeak[data$oldpeak %in% res_oldpeak] <- NA
 ```
+
+Apliquem KNN a les quatre variables amb un nombre de veïns k igual a 5:
+
+```{r}
+if(!require('VIM')) install.packages('VIM'); library('VIM')
+
+dfTrtbpsImp <- kNN(data, variable=c("trtbps"), k = 5)
+dfCholImp <- kNN(data, variable=c("chol"), k = 5)
+dfThalachhImp <- kNN(data, variable=c("thalachh"), k = 5)
+dfOldpeakImp <- kNN(data, variable=c("oldpeak"), k = 5)
+
+
+data$trtbps <- dfTrtbpsImp$trtbps
+data$chol <- dfCholImp$chol
+data$thalachh <- dfThalachhImp$thalachh
+data$oldpeak <- dfOldpeakImp$oldpeak
+```
+
+Presentem un altre cop el gràfic boxplot per comprovar que efectivament ja no hi ha valors extrems en les dades numèriques:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-if (!require('dbscan')) install.packages('dbscan'); library('dbscan')
-set.seed(1234567)
 
-res <- optics(data_num_norm, minPts = 12)
-res
-### Obtenim la ordenació de les observacions o punts
-res$order
-```
+data_num <- data[,c('age', 'trtbps', 'chol', 'thalachh', 'oldpeak')]
 
-```{r}
-### Extracció d'un clústering DBSCAN tallant l'accessibilitat en el valor eps_cl
-set.seed(1234567)
-
-res <- extractDBSCAN(res, eps_cl = 0.29)
-res
-plot(res)
-hullplot(data_num_norm, res)
+par(mfrow=c(1,5),mai=c(0.1, 0.0, 0.2, 0.3))
+par(oma=c(0, 2, 0, 0) + 0.1)
+for (i in colnames(data_num)) boxplot(data_num[i], main = i)
 ```
 
 # 4. Anàlisi de les dades.
