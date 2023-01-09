@@ -352,7 +352,7 @@ fligner.test(list(age_m,age_w))
 
 El test `fligner.test` de R ens mostra un valor de `p` major a $0.05$ i per tant no es pot rebutjar la hipòtesi nul·la d'homoscedasticitat i es conclou que la variable age no presenta variàncies estadísticament diferents per als diferents grups d'homes i dones.
 
-El test Shapiro-Wilk en el conjunt dels homes té un `p-value` molt proper al al nivell de significació generalment utilitzat ($\alpha=0.05$), i en el cas de les dones és superior. Per tant, es conclou que no es pot rebutjar aquesta hipòtesi i s'assumeix que les dades segueixen una distribució normal.
+El test Shapiro-Wilk en el conjunt dels homes té un `p-value` molt proper al al nivell de significació generalment utilitzat ($\alpha=0.05$), i en el cas de les dones és superior. Per tant, es conclou que no es pot rebutjar la hipòtesi nul·la i s'assumeix que les dades segueixen una distribució normal.
 
 -   `trtbps`
 
