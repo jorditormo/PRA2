@@ -314,18 +314,18 @@ for (i in colnames(data_num)) boxplot(data_num[i], main = i)
 
 -   **4.1. Selecció dels grups de dades que es volen analitzar/comparar (p. e., si es volen comparar grups de dades, quins són aquests grups i quins tipus d'anàlisi s'aplicaran?).**
 
-    A l'hora d'analitzarles dades, pot ser interessant separar les dades en diferents grups:
+A l'hora d'analitzarles dades, pot ser interessant separar les dades en diferents grups:
 
-    -   En primer lloc, segons el sexe del pacient. Segons el [National Heart, Lung, and Blood Institute (NHLBI)](https://www.nhlbi.nih.gov/about) estudia desde 2020 les [diferències d'atacs cardíacs entre homes i dones joves](https://www.nhlbi.nih.gov/news/2020/study-explores-heart-attack-differences-among-younger-women-and-men) ja que segons les fonts consultades, com per exemple l'[European Society of Cardiology](https://www.escardio.org/The-ESC/Press-Office/Press-releases/young-women-who-suffer-a-heart-attack-have-worse-outcomes-than-men) [les dones joves que pateixen un atac de cor tenen pitjors resultats que els homes](https://www.escardio.org/The-ESC/Press-Office/Press-releases/young-women-who-suffer-a-heart-attack-have-worse-outcomes-than-men).
+-   En primer lloc, segons el sexe del pacient. Segons el [National Heart, Lung, and Blood Institute (NHLBI)](https://www.nhlbi.nih.gov/about) estudia desde 2020 les [diferències d'atacs cardíacs entre homes i dones joves](https://www.nhlbi.nih.gov/news/2020/study-explores-heart-attack-differences-among-younger-women-and-men) ja que segons les fonts consultades, com per exemple l'[European Society of Cardiology](https://www.escardio.org/The-ESC/Press-Office/Press-releases/young-women-who-suffer-a-heart-attack-have-worse-outcomes-than-men) [les dones joves que pateixen un atac de cor tenen pitjors resultats que els homes](https://www.escardio.org/The-ESC/Press-Office/Press-releases/young-women-who-suffer-a-heart-attack-have-worse-outcomes-than-men).
 
-        Per tant, és interessant separar les dades segons sexe.
+Per tant, és interessant separar les dades segons sexe.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 data_men = data[data$sex == 1,]
 data_women = data[data$sex == 0,]
 ```
 
-    -   Segons els articles anteriors, podria ser interessant separar també els pacients joves. Els mateixos articles consideren joves a pacients de de 50 anys o menys. Ara bé, el dataset d'estudi conté dades de pacients supervivents a un atac de cor i si es vol estudiar la mortalitat d'un atac de cor en pacients joves s'hauria de contar amb dades de pacients que no han sobreviscut.
+-   Segons els articles anteriors, podria ser interessant separar també els pacients joves. Els mateixos articles consideren joves a pacients de de 50 anys o menys. Ara bé, el dataset d'estudi conté dades de pacients supervivents a un atac de cor i si es vol estudiar la mortalitat d'un atac de cor en pacients joves s'hauria de contar amb dades de pacients que no han sobreviscut.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 data["age_segment"] <- cut(data$age, 
@@ -410,24 +410,25 @@ fligner.test(list(oldpeak_m,oldpeak_w))
 
 -   **4.3. Aplicació de proves estadístiques per comparar els grups de dades. En funció de les dades i de l'objectiu de l'estudi, aplicar proves de contrast d'hipòtesis, correlacions, regressions, etc. Aplicar almenys tres mètodes d'anàlisi diferents.**
 
-  - Contrast d'hipòtesis:
-  - Age: Com la normalitat i l’homoscedasticitat es compleixen es poden aplicar proves per contrast d'hipòtesis de tipus paramètric.
+-   Contrast d'hipòtesis:
+
+-   Age: Com la normalitat i l'homoscedasticitat es compleixen es poden aplicar proves per contrast d'hipòtesis de tipus paramètric.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 t.test(data_men$age, data_women$age)
 ```
 
-El p-valor resultant de la prova _t de Student_ és més gran que el nivell de significació, això vol dir que no s’observen diferències estadísticament significatives entre els grups de dades.
+El p-valor resultant de la prova *t de Student* és més gran que el nivell de significació, això vol dir que no s'observen diferències estadísticament significatives entre els grups de dades.
 
-  - trtbp: Com la normalitat i l’homoscedasticitat es compleixen es poden aplicar proves per contrast d'hipòtesis de tipus paramètric.
+-   trtbp: Com la normalitat i l'homoscedasticitat es compleixen es poden aplicar proves per contrast d'hipòtesis de tipus paramètric.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 t.test(data_men$trtbps_n, data_women$trtbps_n)
 ```
 
-El p-valor resultant de la prova _t de Student_ és més gran que el nivell de significació, això vol dir que no s’observen diferències estadísticament significatives entre els grups de dades.
+El p-valor resultant de la prova *t de Student* és més gran que el nivell de significació, això vol dir que no s'observen diferències estadísticament significatives entre els grups de dades.
 
-  - chol: Com la normalitat i l’homoscedasticitat no es compleixen no es poden aplicar proves per contrat d'hipòtesis de tipus paramètric però es poden aplicar proves no paramètriques com Wilcoxon.
+-   chol: Com la normalitat i l'homoscedasticitat no es compleixen no es poden aplicar proves per contrat d'hipòtesis de tipus paramètric però es poden aplicar proves no paramètriques com Wilcoxon.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 wilcox.test(data_women$chol, data_men$chol, alternative="greater")
@@ -435,7 +436,7 @@ wilcox.test(data_women$chol, data_men$chol, alternative="greater")
 
 El resultat del test permet rebutjar la hipòtesi nul·la d'igualtat de nivells de colesterol i, per tant, es conclou que el nivell de colesterol de les dones és supeior que la dels homes.
 
-  - thalachh: Com la normalitat i l’homoscedasticitat no es compleixen no es poden aplicar proves per contrat d'hipòtesis de tipus paramètric però es poden aplicar proves no paramètriques com Wilcoxon.
+-   thalachh: Com la normalitat i l'homoscedasticitat no es compleixen no es poden aplicar proves per contrat d'hipòtesis de tipus paramètric però es poden aplicar proves no paramètriques com Wilcoxon.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 wilcox.test(data_men$thalachh, data_women$thalachh, alternative="greater")
@@ -443,7 +444,7 @@ wilcox.test(data_men$thalachh, data_women$thalachh, alternative="greater")
 
 El resultat del test NO permet rebutjar la hipòtesi nul·la d'igualtat de freqüència cardíaca màxima aconseguida i, per tant, es conclou que la freqüència cardíaca màxima aconseguida no presenta diferències estadísticament significatives entre homes i dones.
 
-  - oldpeak: Com la normalitat i l’homoscedasticitat no es compleixen no es poden aplicar proves per contrat d'hipòtesis de tipus paramètric però es poden aplicar proves no paramètriques com Wilcoxon.
+-   oldpeak: Com la normalitat i l'homoscedasticitat no es compleixen no es poden aplicar proves per contrat d'hipòtesis de tipus paramètric però es poden aplicar proves no paramètriques com Wilcoxon.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 wilcox.test(data_men$oldpeak, data_women$oldpeak, alternative="greater")
@@ -469,7 +470,7 @@ data$output <- as.factor(data$output)
 #str(data)
 ```
 
-- Estudi de correlació lineal
+-   Estudi de correlació lineal
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 tau_corr <- cor(data_num)
@@ -490,13 +491,9 @@ corrplot(res,
          tl.cex=0.8)
 ```
 
-Es pot observar que els atributs amb més correlació són:
-- `age` (edat) i `thalachh` (Pressió arterial en repòs) ~40%: Generalment, els valors normals de la pressió aterial en repós augmenten amb l'edat.
-- `thalachh` (Pressió arterial en repòs) i `oldpeak` (Depressió de ST induïda per l'exercici en relació amb el descans) ~35%: La Depressió de ST es refereix a una troballa en un electrocardiograma , en què el traç en el segment ST és anormalment baix per sota de la línia de base. Això pot ser degut a certes dolències (sistèmiques o no) que també afecten a la pressió arterial.
-La resta, tot i tenir correlacions significatives, inferiors al 35%
+Es pot observar que els atributs amb més correlació són: - `age` (edat) i `thalachh` (Pressió arterial en repòs) \~40%: Generalment, els valors normals de la pressió aterial en repós augmenten amb l'edat. - `thalachh` (Pressió arterial en repòs) i `oldpeak` (Depressió de ST induïda per l'exercici en relació amb el descans) \~35%: La Depressió de ST es refereix a una troballa en un electrocardiograma , en què el traç en el segment ST és anormalment baix per sota de la línia de base. Això pot ser degut a certes dolències (sistèmiques o no) que també afecten a la pressió arterial. La resta, tot i tenir correlacions significatives, inferiors al 35%
 
-En tots els casos, es considera que no hi ha una correlació prou significativa (>|50%|) com per tenir que eliminar l'atribut.
-
+En tots els casos, es considera que no hi ha una correlació prou significativa (\>\|50%\|) com per tenir que eliminar l'atribut.
 
 # 5. Representació dels resultats a partir de taules i gràfiques.
 
