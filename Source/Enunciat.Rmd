@@ -19,9 +19,9 @@ library(knitr)
 
 # 1. Descripció del dataset.
 
-El dataset "Heart Attack Analysis & Prediction" és un conjunt de dades que conté informació sobre persones que han patit un atac de cor. Aquest dataset és important perquè pot ser utilitzat per entrenar models de predicció per preveure qui és més propens a patir un atac de cor en el futur. El dataset pot ajudar a respondre a la pregunta de quins són els factors de risc més importants per a la salut cardiovascular.
+El dataset "Heart Attack Analysis & Prediction" és un conjunt de dades que conté informació pacients identificant-ne si ténen més o menys probabilitat a patir un atac de cor. Aquest dataset és important perquè pot ser utilitzat per entrenar models de predicció per preveure qui és més propens a patir un atac de cor en el futur. El dataset pot ajudar a respondre a la pregunta de quins són els factors de risc més importants per a la salut cardiovascular.
 
-El conjunt de dades s'ha obtingut de l'enllaç proporcionat a l'enunciat (<https://www.kaggle.com/datasets/rashikrahmanpritom/heart-attackanalysis-prediction-dataset>). Dels dos documents disponibles a l'enllaç, es treballarà amb el document `heart.csv`.
+El conjunt de dades s'ha obtingut de l'enllaç proporcionat a l'enunciat (<https://www.kaggle.com/datasets/rashikrahmanpritom/heart-attack-analysis-prediction-dataset>). Dels dos documents disponibles a l'enllaç, es treballarà amb el document `heart.csv`.
 
 -   `age`: Edat del pacient
 -   `sex`: Sexe del pacient
@@ -229,7 +229,7 @@ str(data)
 
 #### 3.2. Identifica i gestiona els valors extrems.
 
-Per poder veure les distribucions de les variables e identificar els valors extrems o outliers, presentem uns gràfics de tipus boxplot per a les variables numèriques:
+Per poder veure les distribucions de les variables i identificar els valors extrems o outliers, presentem uns gràfics de tipus boxplot per a les variables numèriques:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -325,7 +325,7 @@ data_men = data[data$sex == 1,]
 data_women = data[data$sex == 0,]
 ```
 
--   Segons els articles anteriors, podria ser interessant separar també els pacients joves. Els mateixos articles consideren joves a pacients de de 50 anys o menys. Ara bé, el dataset d'estudi conté dades de pacients supervivents a un atac de cor i si es vol estudiar la mortalitat d'un atac de cor en pacients joves s'hauria de comptar amb dades de pacients que no han sobreviscut.
+-   Segons els articles anteriors, podria ser interessant separar també els pacients joves. Els mateixos articles consideren joves a pacients de de 50 anys o menys.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 data["age_segment"] <- cut(data$age, 
@@ -343,16 +343,18 @@ Es comprova la normalitat i la homogeneïtat de la variància de les diferents v
 -   `age`
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
+age_t <- data$age
 age_m <- data_men$age
 age_w <- data_women$age
+shapiro.test(age_t)
 shapiro.test(age_m)
 shapiro.test(age_w)
 fligner.test(list(age_m,age_w))
 ```
 
-El test `fligner.test` de R ens mostra un valor de `p` major a $0.05$ i per tant no es pot rebutjar la hipòtesi nul·la d'homoscedasticitat i es conclou que la variable age no presenta variàncies estadísticament diferents per als diferents grups d'homes i dones.
+Si es fa un primer anàlisi de la normalitat a tots els pacients en general (`age_t`), el test de normalitat Shapiro-Wilk dóna un `p-value` molt petit i per tant es rebutja la hipòtesis nul·la i no es considera que segueix una distribució normal. Tot i així, si es separen el pacientrs entre homes i dones, el test Shapiro-Wilk en el conjunt dels homes té un `p-value` molt proper al nivell de significació generalment utilitzat ($\alpha=0.05$), i en el cas de les dones és superior. Per tant, es conclou que no es pot rebutjar la hipòtesi nul·la i s'assumeix que les dades segueixen una distribució normal.
 
-El test Shapiro-Wilk en el conjunt dels homes té un `p-value` molt proper al nivell de significació generalment utilitzat ($\alpha=0.05$), i en el cas de les dones és superior. Per tant, es conclou que no es pot rebutjar la hipòtesi nul·la i s'assumeix que les dades segueixen una distribució normal.
+El test `fligner.test` de R ens mostra un valor de `p` major a $0.05$ i per tant no es pot rebutjar la hipòtesi nul·la d'homoscedasticitat i es conclou que la variable age no presenta variàncies estadísticament diferents per als diferents grups d'homes i dones.
 
 ```{r}
 if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
@@ -387,7 +389,7 @@ fligner.test(list(trtbps_m,trtbps_w))
 
 El test Shapiro-Wilk tant en el conjunt d'homes com en el de dones dona un `p-value` molt petit i, per tant, es conclou que les dades no compten amb una distribució normal.
 
-```{r}
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
 if(!require('dplyr')) install.packages('dplyr'); library('dplyr')
 
@@ -414,7 +416,7 @@ p4 <-  ggplot(data, aes(x=trtbps, fill = sex, colour = sex)) +
 multiplot(p1, p2, p3,p4, cols=1)
 ```
 
-Es pot observar a continuació que si es fa una transformació logarítmica $(trtbps\_n=\log{(trtbps)})$ els `p-value` Shapiro-Wilk test i Fligner-Killeen test són majors que el nivell se significació i, per tant, s'assumeix que les dades segueixen una distribució normal i la variable no presenta variàncies estadísticament diferents per als diferents grups d'homes i dones.
+Es pot observar a continuació que si es fa una transformació logarítmica $(trtbps\_n=\log{(trtbps)})$ els `p-value` Shapiro-Wilk test i Fligner-Killeen test són majors que el nivell de significació i, per tant, s'assumeix que les dades segueixen una distribució normal i la variable no presenta variàncies estadísticament diferents per als diferents grups d'homes i dones.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 data_men$trtbps_n <- log(data_men$trtbps)
@@ -427,7 +429,6 @@ fligner.test(list(data_men$trtbps_n,data_women$trtbps_n))
 -   `chol`
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-
 chol_m <- data_men$chol
 chol_w <- data_women$chol
 shapiro.test(chol_m)
@@ -435,9 +436,9 @@ shapiro.test(chol_w)
 fligner.test(list(chol_m,chol_w))
 ```
 
-Semblant al cas anterior, el test Shapiro-Wilk del conjunt de les dones dóna un `p-value` molt petit i es conclou que les dades no compten amb una distribució normal. En canvi, el grup dels homes sí es traca d'una distribució normal.
+Tant en el cas dels homes com en el de les dones, el `p-value` d'ambdós Shapiro-Wilk test és molt superior al nivell de significació i per tant es conclou que les dades segueixen una distribució normal
 
-D'altra banda, el `p.value` del Flinger-Killeen test és també molt petit. En aquest cas s'aplicaran proves no paramètriques (Wilcoxon)
+El test `fligner.test` de R ens mostra un valor de `p` major a $0.05$ i per tant no es pot rebutjar la hipòtesi nul·la d'homoscedasticitat i es conclou que la variable `chol` no presenta variàncies estadísticament diferents per als diferents grups d'homes i dones.
 
 -   `thalachh`
 
@@ -449,6 +450,8 @@ shapiro.test(thalachh_w)
 fligner.test(list(thalachh_m,thalachh_w))
 ```
 
+En aquest cas, el test de normalitat Shapiro-Wilk tant el grup d'homes com de dones és molt petit. Així doncs, es conclou que les dades no compten amb una distribució normal.
+
 -   `oldpeak`
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
@@ -459,35 +462,71 @@ shapiro.test(oldpeak_w)
 fligner.test(list(oldpeak_m,oldpeak_w))
 ```
 
+Com en el cas anterior, el test de normalitat Shapiro-Wilk tant el grup d'homes com de dones és molt petit. Així doncs, es conclou que les dades no compten amb una distribució normal.
+
 #### 4.3. Aplicació de proves estadístiques per comparar els grups de dades. En funció de les dades i de l'objectiu de l'estudi, aplicar proves de contrast d'hipòtesis, correlacions, regressions, etc. Aplicar almenys tres mètodes d'anàlisi diferents.
 
--   Contrast d'hipòtesis:
+------------------------------------------------------------------------
 
--   Age: Com la normalitat i l'homoscedasticitat es compleixen es poden aplicar proves per contrast d'hipòtesis de tipus paramètric.
+**Contrast d'hipòtesis:**
 
-```{r echo=TRUE, message=FALSE, warning=FALSE}
-t.test(data_men$age, data_women$age)
-```
+Es tractarà de respondre si: - L'edat és un factor de risc, tant en homes com en dones. - Si els nivells de colesterol són un factor de risc, tant en homes com en dones.
 
-El p-valor resultant de la prova *t de Student* és més gran que el nivell de significació, això vol dir que no s'observen diferències estadísticament significatives entre els grups de dades.
+-   *Edat*: Com la normalitat i l'homoscedasticitat es compleixin (p-valors majors que el nivell de significació), es poden aplicar proves per contrast d'hipòtesis de tipus paramètric, com la prova *t de Student*
 
--   trtbp: Com la normalitat i l'homoscedasticitat es compleixen es poden aplicar proves per contrast d'hipòtesis de tipus paramètric.
+  La hipòtesis nul·la es que les mitjanes d'edat en homes o dones susceptibles a patir un atac de cor o no són iguals:
+$$H_0 : \mu_{1h/d} = \mu_{0h/d}$$
 
-```{r echo=TRUE, message=FALSE, warning=FALSE}
-t.test(data_men$trtbps_n, data_women$trtbps_n)
-```
+La hipòtesis alternativa és que la mitjanes d'edat en homes o dones susceptibles a patir un atac de cor és superior als que no:
 
-El p-valor resultant de la prova *t de Student* és més gran que el nivell de significació, això vol dir que no s'observen diferències estadísticament significatives entre els grups de dades.
+$$H_1 : \mu_{1h/d} > \mu_{0h/d}$$
 
--   chol: Com la normalitat i l'homoscedasticitat no es compleixen no es poden aplicar proves per contrat d'hipòtesis de tipus paramètric però es poden aplicar proves no paramètriques com Wilcoxon.
+
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-wilcox.test(data_women$chol, data_men$chol, alternative="greater")
+t.test(data_men$age[data_men$output==0],
+       data_men$age[data_men$output==1],
+       alternative = "greater")
+t.test(data_women$age[data_women$output==0],
+       data_women$age[data_women$output==1],
+       alternative = "greater")
 ```
 
-El resultat del test permet rebutjar la hipòtesi nul·la d'igualtat de nivells de colesterol i, per tant, es conclou que el nivell de colesterol de les dones és supeior que la dels homes.
+En ambdós casos, el valor `p` obtingut és menor que el nivell de significança i, per tant, es pot rebutjar la hipòtesi nul·la d’igualtat de mitjanes, i com es suspitava, l'edat és un factor de risc.
 
--   thalachh: Com la normalitat i l'homoscedasticitat no es compleixen no es poden aplicar proves per contrat d'hipòtesis de tipus paramètric però es poden aplicar proves no paramètriques com Wilcoxon.
+Per altra banda, es vol comprobar si hi ha diferència entre les mitjanes dels pacients susceptibles a patir un atac de cor entre homes i dones.
+
+La hipòtesis nul·la es que les mitjanes d'edat en homes o dones susceptibles a patir són iguals:
+
+$$H_0 : \mu_{1h} = \mu_{1d}$$
+
+La hipòtesis alternativa és que la mitjanes d'edat en homes o dones susceptibles a patir un atac de cor és superior als que no:
+
+$$H_1 : \mu_{1h} \neq \mu_{1h}$$
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+t.test(data_men$age[data_men$output==1],
+       data_women$age[data_men$output==1])
+```
+
+De nou, s'obté un valor de `p` molt petit, per tant es pot rebutjar la hipòtesis nul·la i es conclou que la mitja d'edat en homes és diferent a la de dones.
+
+-   *Nivell de colesterol*: Com la normalitat i l'homoscedasticitat es compleixin (p-valors majors que el nivell de significació), es poden aplicar proves per contrast d'hipòtesis de tipus paramètric, com la prova *t de Student*.
+
+Es consideren els les mateixes hipòtesis que l'apartat anterior, però en aquest cas en comptes de l'edat es considera lel nivell de colesterol.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+t.test(data_men$chol[data_men$output==0],
+       data_men$chol[data_men$output==1],
+       alternative = "greater")
+t.test(data_women$chol[data_women$output==0],
+       data_women$chol[data_women$output==1],
+       alternative = "greater")
+```
+
+És interessant veure que, segons el contrast d'hipòtesis, s'obtenen resultats diferents en homes i dones. En el cas dels homes el valor `p` obtingut és menor que el nivell de significança i, per tant, es pot rebutjar la hipòtesi nul·la i es conclou que el nivell de colesterol és un factor de risc en homes. Per altra banda, en dones surt un valor de `p` més elevat i no es pot rebutjar la hipòtesis nul·la.
+
+-   **thalachh**: Com la normalitat i l'homoscedasticitat no es compleixen no es poden aplicar proves per contrat d'hipòtesis de tipus paramètric però es poden aplicar proves no paramètriques com Wilcoxon.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 wilcox.test(data_men$thalachh, data_women$thalachh, alternative="greater")
@@ -495,13 +534,29 @@ wilcox.test(data_men$thalachh, data_women$thalachh, alternative="greater")
 
 El resultat del test NO permet rebutjar la hipòtesi nul·la d'igualtat de freqüència cardíaca màxima aconseguida i, per tant, es conclou que la freqüència cardíaca màxima aconseguida no presenta diferències estadísticament significatives entre homes i dones.
 
--   oldpeak: Com la normalitat i l'homoscedasticitat no es compleixen no es poden aplicar proves per contrat d'hipòtesis de tipus paramètric però es poden aplicar proves no paramètriques com Wilcoxon.
+- Proporció d'infarts entre homes i dones.
+
+La hipòtesis nul·la es que les proporcions d'atac al cor entre homes i dones són les mateixes:
+
+$$H_0 : p_{h} = p_{d}$$
+
+La hipòtesis alternativa és que la proporció d'atacs al cor és superior en homes que en dones.:
+
+$$H_1 : p_{h} > p_{d}$$
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-wilcox.test(data_men$oldpeak, data_women$oldpeak, alternative="greater")
+prop.test(x=c(dim(data_women[data_women$output==1,])[1],
+              dim(data_men[data_men$output==1,])[1]),
+          n = c(dim(data_women)[1],
+                dim(data_men)[1]),
+          alternative= "greater",
+          conf.level=0.95,
+          correct=FALSE)
 ```
 
-El resultat del test NO permet rebutjar la hipòtesi nul·la d'igualtat de depressió de ST induïda per l'exercici en relació amb el descans i, per tant, es conclou que la depressió de ST induïda per l'exercici en relació amb el descans no presenta diferències estadísticament significatives entre homes i dones.
+El `p-valor` és inferior a $0.05$, per tant, es pot concloure que, segons les dades proporcionades, la proporció d'atacs al cor és superior en homes que en dones.
+
+**Correlació:**
 
 Segons la descripció dels valors interessa factorizar-ne alguns ja que són variables categòriques amb un número finit de valors.
 
@@ -514,11 +569,6 @@ data$slp <- as.factor(data$slp)
 data$caa <- as.factor(data$caa)
 data$thall <- as.factor(data$thall)
 data$output <- as.factor(data$output)
-
-# valors numèrics i categòrics separats
-#data_num <- data[,c('age', 'trtbps', 'chol', 'thalachh')]
-#data_cat <- data[,c('sex','fbs', 'restecg', 'exng', 'slp', 'caa', 'thall', 'output')]
-#str(data)
 ```
 
 -   Estudi de correlació lineal
