@@ -501,7 +501,11 @@ ggplot(data, aes(oldpeak, fill = as.factor(sex))) +
 
 #### Contrast d'hipòtesis
 
-Es tractarà de respondre si: - L'edat és un factor de risc, tant en homes com en dones. - Si els nivells de colesterol són un factor de risc, tant en homes com en dones.
+Es tractarà de respondre si:
+
+\- L'edat és un factor de risc, tant en homes com en dones.
+
+\- Si els nivells de colesterol són un factor de risc, tant en homes com en dones.
 
 -   *Edat*: Com la normalitat i l'homoscedasticitat es compleixin (p-valors majors que el nivell de significació), es poden aplicar proves per contrast d'hipòtesis de tipus paramètric, com la prova *t de Student*
 
@@ -586,20 +590,7 @@ El `p-valor` és inferior a $0.05$, per tant, es pot concloure que, segons les d
 
 #### Correlació
 
-Segons la descripció dels valors interessa factorizar-ne alguns ja que són variables categòriques amb un número finit de valors.
-
-```{r echo=TRUE, message=FALSE, warning=FALSE}
-data$sex <- as.factor(data$sex)
-data$fbs <- as.factor(data$fbs)
-data$restecg <- as.factor(data$restecg)
-data$exng <- as.factor(data$exng)
-data$slp <- as.factor(data$slp)
-data$caa <- as.factor(data$caa)
-data$thall <- as.factor(data$thall)
-data$output <- as.factor(data$output)
-```
-
--   Estudi de correlació lineal
+Es representa gràficament les correlacions entre parells de variables en un conjunt de dades.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 tau_corr <- cor(data_num)
@@ -620,7 +611,13 @@ corrplot(res,
          tl.cex=0.8)
 ```
 
-Es pot observar que els atributs amb més correlació són: - `age` (edat) i `thalachh` (Pressió arterial en repòs) \~40%: Generalment, els valors normals de la pressió aterial en repós augmenten amb l'edat. - `thalachh` (Pressió arterial en repòs) i `oldpeak` (Depressió de ST induïda per l'exercici en relació amb el descans) \~35%: La Depressió de ST es refereix a una troballa en un electrocardiograma , en què el traç en el segment ST és anormalment baix per sota de la línia de base. Això pot ser degut a certes dolències (sistèmiques o no) que també afecten a la pressió arterial. La resta, tenen correlacions inferiors al 35%.
+Es pot observar que els atributs amb més correlació són:
+
+\- `age` (edat) i `thalachh` (Pressió arterial en repòs) \~40%: Generalment, els valors normals de la pressió aterial en repós augmenten amb l'edat.
+
+\- `thalachh` (Pressió arterial en repòs) i `oldpeak` (Depressió de ST induïda per l'exercici en relació amb el descans) \~35%: La Depressió de ST es refereix a una troballa en un electrocardiograma , en què el traç en el segment ST és anormalment baix per sota de la línia de base. Això pot ser degut a certes dolències (sistèmiques o no) que també afecten a la pressió arterial.
+
+La resta, tenen correlacions inferiors al 35%.
 
 En tots els casos, es considera que no hi ha una correlació prou significativa (\>\|50%\|) com per eliminar l'atribut.
 
@@ -628,9 +625,20 @@ En tots els casos, es considera que no hi ha una correlació prou significativa 
 
 A continuació utilitzarem una regressió logística per intentar predir si una persona té o no un atac de cor. Aquest tipus d'anàlisi de regressió s'utilitza per predir variables binàries a partir d'altres variables. En el nostre cas utilitzarem totes les dades seleccionades per predir la variable output.
 
-A R, aquest tipus de models s'estimen mitjançant la funció glm(), especificant la família com a binomial.
+A R, aquest tipus de models s'estimen mitjançant la funció `glm()`, especificant la família com a binomial.
 
-Primer, dividirem el dataset "desordenat" en 2/3, que s'utilitzaran per l'entrenament, i el terç restant, per testejar.
+Primer, factoritzem les variables categòriques i divideix el dataset "desordenat" en 2/3, que s'utilitzaran per l'entrenament, i el terç restant, per testejar.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+data$sex <- as.factor(data$sex)
+data$fbs <- as.factor(data$fbs)
+data$restecg <- as.factor(data$restecg)
+data$exng <- as.factor(data$exng)
+data$slp <- as.factor(data$slp)
+data$caa <- as.factor(data$caa)
+data$thall <- as.factor(data$thall)
+data$output <- as.factor(data$output)
+```
 
 ```{r}
 set.seed(1234)
@@ -654,7 +662,7 @@ summary(logit)
 
 La bondat del model s'avalua mitjançant la mesura AIC (criteri d'informaicó d'Akike), en el nostre model aquest valor és 241.64. Com més petit és aquest valor, millor és la bondat de l'ajustament i menor la complexitat del model.
 
-També veiem com el nombre de vasos principals del cor (variable caa) és molt significatiu per al model, seguit de exercici angina de pit induïda (variable exng), el sexe i, finalment, el colesterol.
+També veiem com el nombre de vasos principals del cor (variable caa) és molt significatiu per al model, seguit de exng (exercici angina de pit induïda), el sexe i, finalment, el colesterol.
 
 A continuació testejem el model amb el dataset reservat i mostrem la matriu de confusió corresponent.
 
