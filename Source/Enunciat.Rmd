@@ -393,7 +393,6 @@ fligner.test(list(data_men$trtbps_n,data_women$trtbps_n))
 A continuació mostrem gràficament les distribucions de la variable trtbps abans, separat en homes i dones, i després de la transformació logarítmica, només homes ja que la distribució de les dones no ha canviat (ja era normal).
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
 
 ggplot(data, aes(trtbps, fill = as.factor(data$sex))) +
   geom_density(alpha = 0.3) +
@@ -426,7 +425,6 @@ El test `fligner.test` de R ens mostra un valor de `p` major a $0.05$ i per tant
 Mostrem les distribucions gràficament:
 
 ```{r}
-if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
 if(!require('dplyr')) install.packages('dplyr'); library('dplyr')
 
 
@@ -434,7 +432,6 @@ ggplot(data, aes(chol, fill = as.factor(sex))) +
   geom_density(alpha = 0.3)+
    xlim(90, 420) +
   guides(fill=guide_legend(title="Sex"))
- # ggtitle(label="Abans de la transformació logarítmica")
 ```
 
 -   `thalachh`
@@ -497,8 +494,6 @@ Veiem com en aquest cas, després de la transformació, el p-value del conjunt d
 Mostrem les distribucions per sexe gràficament abans i després de la transformació Box-Cox:
 
 ```{r}
-if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
-if(!require('dplyr')) install.packages('dplyr'); library('dplyr')
 
 ggplot(data, aes(thalachh, fill = as.factor(sex))) +
   geom_density(alpha = 0.3)+
@@ -760,6 +755,20 @@ Aquest apartat es pot respondre al llarg de la pràctica, sense la necessitat de
 # 6. Resolució del problema.
 
 A partir dels resultats obtinguts, quines són les conclusions? Els resultats permeten respondre al problema?
+
+El problema inicialment plantejat és si aquest dataset pot determinar quins són els factors de risc més importants per a la salut cardiovascular.
+
+S'ha vist:
+
+- Mitjançant el contrast d'hiòtesis:
+	- En general, l'edat és un factor de risc. La mitja d'edat de pacients amb probabilitat de patir un atac de cor `output=1`  és més elevada als que no.
+	- Per altra banda, s'observa que les mitjanes d'edat entre homes i dones amb probabilitat de patir un atac de cor és diferent.
+	- Pel que fa als nivells de colesterol, s'ha observat que el nivell de colesterol és un factor de risc en homes mentre que en el cas de les dones no es pot descartar la hipòtesis nul·la.
+	- Segons les dades proporcionades, la proporció d'atacs al cor és superior en homes que en dones
+
+- Correlació líneal: tant `age` (edat) i `thalachh` (Pressió arterial en repòs) com `thalachh` (Pressió arterial en repòs) i `oldpeak` (Depressió de ST induïda per l'exercici en relació amb el descans) ténen una correlació d'entre el 35% i 40%. La resta, tenen correlacions inferiors al 35%. En tots els casos, es considera que no hi ha una correlació prou significativa (\>\|50%\|) com per eliminar l'atribut.
+
+- Regressió logistica
 
 # 7. Codi.
 
