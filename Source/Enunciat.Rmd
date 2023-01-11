@@ -654,6 +654,8 @@ summary(logit)
 
 La bondat del model s'avalua mitjançant la mesura AIC (criteri d'informaicó d'Akike), en el nostre model aquest valor és 241.64. Com més petit és aquest valor, millor és la bondat de l'ajustament i menor la complexitat del model.
 
+També veiem com el nombre de vasos principals del cor (variable caa) és molt significatiu per al model, seguit de exercici angina de pit induïda (variable exng), el sexe i, finalment, el colesterol.
+
 A continuació testejem el model amb el dataset reservat i mostrem la matriu de confusió corresponent.
 
 ```{r}
