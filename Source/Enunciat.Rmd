@@ -238,7 +238,6 @@ data_num <- data[,c('age', 'trtbps', 'chol', 'thalachh', 'oldpeak')]
 par(mfrow=c(1,5),mai=c(0.1, 0.0, 0.2, 0.3))
 par(oma=c(0, 2, 0, 0) + 0.1)
 for (i in colnames(data_num)) boxplot(data_num[i], main = i)
-
 ```
 
 En aquests gràfics podem veure que totes les columnes excepte "age" tenen punts individuals fora de les bigues, aquests valors són els que s'han considerat com extrems. A continuació es mostren aquests outliers per a cada variable:
@@ -360,14 +359,12 @@ Mostrem les distribucions gràficament:
 
 ```{r}
 if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
-if(!require('dplyr')) install.packages('dplyr'); library('dplyr')
 
 
 ggplot(data, aes(age, fill = as.factor(sex))) +
   geom_density(alpha = 0.3)+
    xlim(20, 90) +
   guides(fill=guide_legend(title="Sex"))
- # ggtitle(label="Abans de la transformació logarítmica")
 ```
 
 -   `trtbps`
@@ -381,24 +378,22 @@ shapiro.test(trtbps_w)
 fligner.test(list(trtbps_m,trtbps_w))
 ```
 
-El test Shapiro-Wilk tant en el conjunt d'homes com en el de dones dona un `p-value` molt petit i, per tant, es conclou que les dades no compten amb una distribució normal.
+El test Shapiro-Wilk en el conjunt d'homes dona un `p-value` molt petit, però, en canvi, en les dones és més elevat i major al nivell de significació. Per tant, es conclou que les dades del conjunt dels homes no compten amb una distribució normal però el de les dones sí.
 
 Es pot observar a continuació que si es fa una transformació logarítmica $(trtbps\_n=\log{(trtbps)})$ els `p-value` Shapiro-Wilk test i Fligner-Killeen test són majors que el nivell de significació i, per tant, s'assumeix que les dades segueixen una distribució normal i la variable no presenta variàncies estadísticament diferents per als diferents grups d'homes i dones.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 data_men$trtbps_n <- log(data_men$trtbps)
-data_women$trtbps_n <- log(data_women$trtbps)
+data_women$trtbps_n <- data_women$trtbps
 shapiro.test(data_men$trtbps_n)
 shapiro.test(data_women$trtbps_n)
 fligner.test(list(data_men$trtbps_n,data_women$trtbps_n))
 ```
 
-A continuació mostrem gràficament les distribucions de la variable trtbps abans i després de la transformació logarítmica:
+A continuació mostrem gràficament les distribucions de la variable trtbps abans, separat en homes i dones, i després de la transformació logarítmica, només homes ja que la distribució de les dones no ha canviat (ja era normal).
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
-if(!require('dplyr')) install.packages('dplyr'); library('dplyr')
-
 
 ggplot(data, aes(trtbps, fill = as.factor(data$sex))) +
   geom_density(alpha = 0.3) +
@@ -406,11 +401,8 @@ ggplot(data, aes(trtbps, fill = as.factor(data$sex))) +
   guides(fill=guide_legend(title="Sex"))+
   ggtitle(label="Abans de la transformació logarítmica")
 
-#Es reconstrueix el dataframe amb les dades dels dos gèneres
-df <- rbind(data_women, data_men)
-df <- df[order(as.numeric(row.names(df))), ]
 
-ggplot(df, aes(trtbps_n, fill = as.factor(df$sex))) +
+ggplot(data_men, aes(trtbps_n, fill = as.factor(sex))) +
   geom_density(alpha = 0.3) +
    xlim(4.4, 5.3) +
   guides(fill=guide_legend(title="Sex"))+
@@ -457,17 +449,73 @@ fligner.test(list(thalachh_m,thalachh_w))
 
 En aquest cas, el test de normalitat Shapiro-Wilk tant el grup d'homes com de dones és molt petit. Així doncs, es conclou que les dades no compten amb una distribució normal.
 
-Mostrem les distribucions per sexe gràficament
+Implementem Box-Cox per normalitzar les distribucions.
+
+Conjunt d'homes:
+
+```{r}
+if (!require('DescTools')) install.packages('DescTools'); library('DescTools')
+lambda <- BoxCoxLambda(thalachh_m)
+data_men$thalachh_n <- BoxCox(thalachh_m, lambda = lambda) 
+
+par(mfrow=c(2,2)) 
+qqnorm(thalachh_m, main="thalachh")
+qqline(thalachh_m,col=2) 
+
+qqnorm(data_men$thalachh_n, main="thalachh normal") 
+qqline(thalachh_m,col=2) 
+
+hist(thalachh_m,main="thalachh") 
+hist(data_men$thalachh_n, main="thalachh normal")
+```
+
+```{r}
+if (!require('DescTools')) install.packages('DescTools'); library('DescTools')
+lambda <- BoxCoxLambda(thalachh_w)
+data_women$thalachh_n <- BoxCox(thalachh_w, lambda = lambda) 
+
+par(mfrow=c(2,2)) 
+qqnorm(thalachh_w, main="thalachh")
+qqline(thalachh_w,col=2) 
+
+qqnorm(data_women$thalachh_n, main="thalachh normal") 
+qqline(thalachh_m,col=2) 
+
+hist(thalachh_m,main="thalachh") 
+hist(data_women$thalachh_n, main="thalachh normal")
+```
+
+Tornem a fer lla prova Shapiro per comprovar que les distribucions ja són normals:
+
+```{r}
+shapiro.test(data_men$thalachh_n)
+shapiro.test(data_women$thalachh_n)
+```
+
+Veiem com en aquest cas, després de la transformació, el p-value del conjunt dels homes ja és més gran que el nivell de significació i, per tant, es tracta d'una distribució normal. En canvi, pel que fa a les dones, aquesta normalitat, tot i millorar, no s'ha arribat a aconseguir.
+
+Mostrem les distribucions per sexe gràficament abans i després de la transformació Box-Cox:
 
 ```{r}
 if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
 if(!require('dplyr')) install.packages('dplyr'); library('dplyr')
 
-
 ggplot(data, aes(thalachh, fill = as.factor(sex))) +
   geom_density(alpha = 0.3)+
    xlim(65, 230) +
-  guides(fill=guide_legend(title="Sex"))
+  guides(fill=guide_legend(title="Sex"))+
+  ggtitle(label="Abans de la transformació Box-Cox")
+
+#Es reconstrueix el dataframe amb les dades dels dos gèneres
+df <- rbind(data_women, data_men)
+df <- df[order(as.numeric(row.names(df))), ]
+
+ggplot(df, aes(thalachh_n, fill = as.factor(sex))) +
+  geom_density(alpha = 0.3)+
+   xlim(0, 20000) +
+  guides(fill=guide_legend(title="Sex"))+
+  ggtitle(label="Després de la transformació Box-Cox")
+
 ```
 
 -   `oldpeak`
@@ -486,7 +534,6 @@ Mostrem les distribucions per sexe gràficament:
 
 ```{r}
 if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
-if(!require('dplyr')) install.packages('dplyr'); library('dplyr')
 
 
 ggplot(data, aes(oldpeak, fill = as.factor(sex))) +
