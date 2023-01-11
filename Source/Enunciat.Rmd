@@ -760,15 +760,16 @@ El problema inicialment plantejat és si aquest dataset pot determinar quins só
 
 S'ha vist:
 
-- Mitjançant el contrast d'hiòtesis:
-	- En general, l'edat és un factor de risc. La mitja d'edat de pacients amb probabilitat de patir un atac de cor `output=1`  és més elevada als que no.
-	- Per altra banda, s'observa que les mitjanes d'edat entre homes i dones amb probabilitat de patir un atac de cor és diferent.
-	- Pel que fa als nivells de colesterol, s'ha observat que el nivell de colesterol és un factor de risc en homes mentre que en el cas de les dones no es pot descartar la hipòtesis nul·la.
-	- Segons les dades proporcionades, la proporció d'atacs al cor és superior en homes que en dones
+-   Mitjançant el contrast d'hiòtesis:
 
-- Correlació líneal: tant `age` (edat) i `thalachh` (Pressió arterial en repòs) com `thalachh` (Pressió arterial en repòs) i `oldpeak` (Depressió de ST induïda per l'exercici en relació amb el descans) ténen una correlació d'entre el 35% i 40%. La resta, tenen correlacions inferiors al 35%. En tots els casos, es considera que no hi ha una correlació prou significativa (\>\|50%\|) com per eliminar l'atribut.
+    -   En general, l'edat és un factor de risc. La mitja d'edat de pacients amb probabilitat de patir un atac de cor `output=1` és més elevada als que no.
+    -   Per altra banda, s'observa que les mitjanes d'edat entre homes i dones amb probabilitat de patir un atac de cor és diferent.
+    -   Pel que fa als nivells de colesterol, s'ha observat que el nivell de colesterol és un factor de risc en homes mentre que en el cas de les dones no es pot descartar la hipòtesis nul·la.
+    -   Segons les dades proporcionades, la proporció d'atacs al cor és superior en homes que en dones
 
-- Regressió logistica
+-   Correlació líneal: tant `age` (edat) i `thalachh` (Pressió arterial en repòs) com `thalachh` (Pressió arterial en repòs) i `oldpeak` (Depressió de ST induïda per l'exercici en relació amb el descans) ténen una correlació d'entre el 35% i 40%. La resta, tenen correlacions inferiors al 35%. En tots els casos, es considera que no hi ha una correlació prou significativa (\>\|50%\|) com per eliminar l'atribut.
+
+-   Regressió logistica
 
 # 7. Codi.
 
@@ -777,3 +778,12 @@ Cal adjuntar el codi, preferiblement en R, amb el que s'ha realitzat la neteja, 
 # 8. Vídeo.
 
 Realitzar un breu vídeo explicatiu de la pràctica (màxim 10 minuts) on tots els integrants de l'equip expliquin amb les seves pròpies paraules el desenvolupament de la pràctica, basant-se en les preguntes de l'enunciat per a justificar i explicar el codi desenvolupat. Aquest vídeo s'haurà de lliurar a través d'un enllaç al Google Drive de la UOC (<https://drive.google.com/>...), juntament amb l'enllaç al repositori Git lliurat.
+
+# 9. Taula de contribucions.
+
+| Contribucions             | Signatura                |
+|---------------------------|--------------------------|
+| Investigació prèvia       | Judith Cid i Jordi Tormo |
+| Redacció de les respostes | Judith Cid i Jordi Tormo |
+| Desenvolupament del codi  | Judith Cid i Jordi Tormo |
+| Participació al vídeo     | Judith Cid i Jordi Tormo |
