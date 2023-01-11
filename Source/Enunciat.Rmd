@@ -309,6 +309,13 @@ par(oma=c(0, 2, 0, 0) + 0.1)
 for (i in colnames(data_num)) boxplot(data_num[i], main = i)
 ```
 
+Finalment, es guarda el df en un nou csv
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+write.csv(data, '../Dataset/heart_processed.csv', row.names=TRUE)
+
+```
+
 # 4. Anàlisi de les dades.
 
 ### 4.1. Selecció dels grups de dades que es volen analitzar/comparar (p. e., si es volen comparar grups de dades, quins són aquests grups i quins tipus d'anàlisi s'aplicaran?).
