@@ -74,7 +74,7 @@ str(data_raw)
 
 # 3. Neteja de les dades.
 
-#### 3.1. Les dades contenen zeros o elements buits? Gestiona cadascun d'aquests casos.
+### 3.1. Les dades contenen zeros o elements buits? Gestiona cadascun d'aquests casos.
 
 En primer lloc, es comprova que tots els atributs tenen sentit segons la seva descripció i valors possibles.
 
@@ -227,7 +227,7 @@ data <- data[, setdiff(names(data), "cp")]
 str(data)
 ```
 
-#### 3.2. Identifica i gestiona els valors extrems.
+### 3.2. Identifica i gestiona els valors extrems.
 
 Per poder veure les distribucions de les variables i identificar els valors extrems o outliers, presentem uns gràfics de tipus boxplot per a les variables numèriques:
 
@@ -312,7 +312,7 @@ for (i in colnames(data_num)) boxplot(data_num[i], main = i)
 
 # 4. Anàlisi de les dades.
 
-#### 4.1. Selecció dels grups de dades que es volen analitzar/comparar (p. e., si es volen comparar grups de dades, quins són aquests grups i quins tipus d'anàlisi s'aplicaran?).
+### 4.1. Selecció dels grups de dades que es volen analitzar/comparar (p. e., si es volen comparar grups de dades, quins són aquests grups i quins tipus d'anàlisi s'aplicaran?).
 
 A l'hora d'analitzar les dades, pot ser interessant separar les dades en diferents grups:
 
@@ -336,7 +336,7 @@ data_young = data[data$age_segment == 1,]
 data_old = data[data$age_segment == 0,]
 ```
 
-#### 4.2. Comprovació de la normalitat i homogeneïtat de la variància.
+### 4.2. Comprovació de la normalitat i homogeneïtat de la variància.
 
 Es comprova la normalitat i la homogeneïtat de la variància de les diferents variables numèriques `age`, `trtbps`, `chol`, `thalachh` i `oldpeak`
 
@@ -495,11 +495,11 @@ ggplot(data, aes(oldpeak, fill = as.factor(sex))) +
   guides(fill=guide_legend(title="Sex"))
 ```
 
-#### 4.3. Aplicació de proves estadístiques per comparar els grups de dades. En funció de les dades i de l'objectiu de l'estudi, aplicar proves de contrast d'hipòtesis, correlacions, regressions, etc. Aplicar almenys tres mètodes d'anàlisi diferents.
+### 4.3. Aplicació de proves estadístiques per comparar els grups de dades. En funció de les dades i de l'objectiu de l'estudi, aplicar proves de contrast d'hipòtesis, correlacions, regressions, etc. Aplicar almenys tres mètodes d'anàlisi diferents.
 
 ------------------------------------------------------------------------
 
-**Contrast d'hipòtesis:**
+#### Contrast d'hipòtesis
 
 Es tractarà de respondre si: - L'edat és un factor de risc, tant en homes com en dones. - Si els nivells de colesterol són un factor de risc, tant en homes com en dones.
 
@@ -584,7 +584,7 @@ prop.test(x=c(dim(data_women[data_women$output==1,])[1],
 
 El `p-valor` és inferior a $0.05$, per tant, es pot concloure que, segons les dades proporcionades, la proporció d'atacs al cor és superior en homes que en dones.
 
-**Correlació:**
+#### Correlació
 
 Segons la descripció dels valors interessa factorizar-ne alguns ja que són variables categòriques amb un número finit de valors.
 
@@ -623,6 +623,78 @@ corrplot(res,
 Es pot observar que els atributs amb més correlació són: - `age` (edat) i `thalachh` (Pressió arterial en repòs) \~40%: Generalment, els valors normals de la pressió aterial en repós augmenten amb l'edat. - `thalachh` (Pressió arterial en repòs) i `oldpeak` (Depressió de ST induïda per l'exercici en relació amb el descans) \~35%: La Depressió de ST es refereix a una troballa en un electrocardiograma , en què el traç en el segment ST és anormalment baix per sota de la línia de base. Això pot ser degut a certes dolències (sistèmiques o no) que també afecten a la pressió arterial. La resta, tenen correlacions inferiors al 35%.
 
 En tots els casos, es considera que no hi ha una correlació prou significativa (\>\|50%\|) com per eliminar l'atribut.
+
+#### Regressió logística
+
+A continuació utilitzarem una regressió logística per intentar predir si una persona té o no un atac de cor. Aquest tipus d'anàlisi de regressió s'utilitza per predir variables binàries a partir d'altres variables. En el nostre cas utilitzarem totes les dades seleccionades per predir la variable output.
+
+A R, aquest tipus de models s'estimen mitjançant la funció glm(), especificant la família com a binomial.
+
+Primer, dividirem el dataset "desordenat" en 2/3, que s'utilitzaran per l'entrenament, i el terç restant, per testejar.
+
+```{r}
+set.seed(1234)
+data_shuffled <- data[sample(nrow(data)),]
+rows = 2/3 * nrow(data)
+data_train <- data_shuffled[1: rows, ]
+data_test <- data_shuffled[rows:nrow(data), ]
+
+dim(data)
+dim(data_train)
+dim(data_test)
+```
+
+A continuació executem la regressió i mostrem un resum dels resultats:
+
+```{r}
+bc <- data[complete.cases(data_train),] 
+logit <- glm(output ~. ,data=bc, family="binomial") 
+summary(logit)
+```
+
+La bondat del model s'avalua mitjançant la mesura AIC (criteri d'informaicó d'Akike), en el nostre model aquest valor és 241.64. Com més petit és aquest valor, millor és la bondat de l'ajustament i menor la complexitat del model.
+
+A continuació testejem el model amb el dataset reservat i mostrem la matriu de confusió corresponent.
+
+```{r}
+predict <- predict(logit, data_test, type = 'response')
+# confusion matrix
+conf_mat <- table(data_test$output, predict > 0.5)
+conf_mat
+```
+
+Descrivim els resultats de la matriu de confusió:
+
+-   True Negative (TN): 36 casos en els quals el model ha predit correctament que no hi ha un infart.
+
+-   False Positive (FP): 8 casos en els quals el model ha predit un infart però no n'hi havia.
+
+-   False Negative (FN): 5 casos en els quals el model ha predit que no hi havia un infart però en realitat n'hi havia.
+
+-   True Positive (TP): 53 casos en els quals el model ha predit correctament un infart.
+
+A partir d'aquests valors podem extreure mètriques per avaluar l'efectivitat del model en funció del nostre objectiu. En el nostre cas d'estudi, és interessant maximitzar el nombre de positius vertaders, ja que es vol assegurar que el màxim nombre de casos de malalties cardíaques es detectin correctament i, per tant, ser capaços de predir persones amb alta probabilitat de patir un atac de cor.
+
+Per això, és particularment important obtenir un model amb una sensibilitat alta. Igualment, aquesta alta sensibilitat, no hauria de venir acompanyada d'una baixa especificitat, que significaria un gran nombre de falsos positius, és a dir, persones que sense patir malaltia cardíaca es detecten com a malalts.
+
+A continuació mostrem els resultats de les mètriques:
+
+```{r}
+recall <- conf_mat[2,2] / sum(conf_mat[2,])
+recall
+```
+
+```{r}
+accuracy <- sum(diag(conf_mat)) / sum(conf_mat)
+accuracy
+```
+
+```{r}
+especif <- conf_mat[1,1] / sum(conf_mat[1,])
+especif
+```
+
+Podem observar com la sensibilitat, o recall, té un valor alt i, per tant, el model entra dintre de les necessitats del nostre problema. L'accuracy i l'especificitat també són altes, però menys, especialment l'especificitat, fet que indica que potser hi ha més falsos positius dels desitjats.
 
 # 5. Representació dels resultats a partir de taules i gràfiques.
 
