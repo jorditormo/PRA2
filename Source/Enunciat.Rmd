@@ -3,9 +3,9 @@ title: "PRA 2 - Com realitzar la neteja i l'anàlisi de dades?"
 author: "Judith Cid, Jordi Tormo"
 date: "2023-12-27"
 output:
-  html_document:
-    toc: yes
   pdf_document:
+    toc: yes
+  html_document:
     toc: yes
 ---
 
@@ -81,7 +81,7 @@ data <- data_raw
 ```
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-print(paste("CP: A part dels valors possibles (1, 2, 3 i 4) i elements buits, hi ha", sum(data$cp %in% c(0,1,2,3,4)) - nrow(data) ,"registres amb altres valors."))
+print(paste("CP: A part dels valors possibles (1, 2, 3 i 4), hi ha", nrow(data) - sum(data$cp %in% c(1,2,3,4)) ,"registres amb altres valors."))
 if (all.equal(data$trtbps, as.integer(data$trtbps)) ){
   print("trtbps: Tots els valors són enters.")} 
 if (all.equal(data$chol, as.integer(data$chol)) ){
@@ -235,7 +235,7 @@ Es pot observar a continuació que si es fa una transformació logarítmica $(tr
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 data_men$trtbps_n <- log(data_men$trtbps)
 data_women$trtbps_n <- data_women$trtbps
-shapiro.test(data_men$trtbps_n); shapiro.test(data_women$trtbps_n); fligner.test(list(data_men$trtbps_n,data_women$trtbps_n))
+shapiro.test(data_men$trtbps_n); shapiro.test(data_women$trtbps_n)
 ```
 
 A continuació mostrem gràficament les distribucions de la variable `trtbps` abans, separat en homes i dones, i després de la transformació logarítmica, només homes, ja que la distribució de les dones no ha canviat (ja era normal).
@@ -244,10 +244,10 @@ A continuació mostrem gràficament les distribucions de la variable `trtbps` ab
 if (!require('gridExtra')) install.packages('gridExtra'); library('gridExtra')
 p1 <- ggplot(data, aes(trtbps, fill = as.factor(data$sex))) +
   geom_density(alpha = 0.3) + xlim(75, 190) +  guides(fill=guide_legend(title="Sex"))+
-  ggtitle(label="Abans de la transformació logarítmica")
+  ggtitle(label="Abans del log")
 p2 <- ggplot(data_men, aes(trtbps_n, fill = as.factor(sex))) +
   geom_density(alpha = 0.3) + xlim(4.4, 5.3) +  guides(fill=guide_legend(title="Sex"))+
-  ggtitle(label="Després de la transformació logarítmica")
+  ggtitle(label="Després del log")
 grid.arrange(p1, p2, nrow=1, ncol=2)
 ```
 
@@ -325,7 +325,7 @@ p1 <- ggplot(data, aes(thalachh, fill = as.factor(sex))) +
   geom_density(alpha = 0.3)+
    xlim(65, 230) +
   guides(fill=guide_legend(title="Sex"))+
-  ggtitle(label="Abans de la transformació Box-Cox")
+  ggtitle(label="Abans de Box-Cox")
 
 #Es reconstrueix el dataframe amb les dades dels dos gèneres
 df <- rbind(data_women, data_men)
@@ -335,7 +335,7 @@ p2 <- ggplot(df, aes(thalachh_n, fill = as.factor(sex))) +
   geom_density(alpha = 0.3)+
    xlim(0, 20000) +
   guides(fill=guide_legend(title="Sex"))+
-  ggtitle(label="Després de la transformació Box-Cox")
+  ggtitle(label="Després de Box-Cox")
 grid.arrange(p1, p2, nrow=1, ncol=2)
 ```
 
