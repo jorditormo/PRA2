@@ -3,9 +3,9 @@ title: "PRA 2 - Com realitzar la neteja i l'anàlisi de dades?"
 author: "Judith Cid, Jordi Tormo"
 date: "2023-12-27"
 output:
-  html_document:
-    toc: yes
   pdf_document:
+    toc: yes
+  html_document:
     toc: yes
 ---
 
@@ -790,6 +790,9 @@ Cal adjuntar el codi, preferiblement en R, amb el que s'ha realitzat la neteja, 
 # 8. Vídeo.
 
 Realitzar un breu vídeo explicatiu de la pràctica (màxim 10 minuts) on tots els integrants de l'equip expliquin amb les seves pròpies paraules el desenvolupament de la pràctica, basant-se en les preguntes de l'enunciat per a justificar i explicar el codi desenvolupat. Aquest vídeo s'haurà de lliurar a través d'un enllaç al Google Drive de la UOC (<https://drive.google.com/>...), juntament amb l'enllaç al repositori Git lliurat.
+
+| <https://drive.google.com/drive/u/1/folders/1FxrpxE3qg98JGHOX872uEIdfW40zAeFU> |
+|------------------------------------------------------------------------|
 
 # 9. Taula de contribucions.
 
